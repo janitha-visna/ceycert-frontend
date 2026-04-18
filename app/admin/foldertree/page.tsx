@@ -10,21 +10,9 @@ import {
   TemplateDocument,
   TemplateNode,
 } from "@/features/folder-template-designer/types/folder-tree";
+import { getAllChildTypes,collectDescendantIds } from "@/features/folder-template-designer/lib/tree-helpers";
+import { AddChildNodeForm } from "@/features/folder-template-designer/components/AddChildNodeForm";
 
-function getAllChildTypes(): NodeType[] {
-  return ["cycle", "stage", "folder"];
-}
-
-function collectDescendantIds(nodes: TemplateNode[], nodeId: string): string[] {
-  const ids: string[] = [nodeId];
-  const children = nodes.filter((node) => node.parentId === nodeId);
-
-  for (const child of children) {
-    ids.push(...collectDescendantIds(nodes, child.id));
-  }
-
-  return ids;
-}
 
 export default function Page() {
   const [templates, setTemplates] =
@@ -228,74 +216,14 @@ export default function Page() {
       </div>
 
       {addForm && (
-        <div className="rounded border p-4 space-y-3">
-          <h2 className="font-semibold">Add Child Node</h2>
-
-          <div className="text-sm text-gray-600">
-            Parent: <span className="font-medium">{addForm.parentId}</span>
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-sm font-medium">Category</label>
-            <select
-              value={addForm.type}
-              onChange={(e) =>
-                setAddForm((prev) =>
-                  prev ? { ...prev, type: e.target.value as NodeType } : prev
-                )
-              }
-              className="rounded border px-3 py-2"
-            >
-              {availableTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-sm font-medium">Name</label>
-            <input
-              value={addForm.name}
-              onChange={(e) =>
-                setAddForm((prev) =>
-                  prev ? { ...prev, name: e.target.value } : prev
-                )
-              }
-              placeholder="Enter custom name"
-              className="w-full rounded border px-3 py-2"
-            />
-          </div>
-
-          <div className="text-xs text-gray-500">
-            Generated ID preview:{" "}
-            {selectedTemplate
-              ? generateNextId(
-                  selectedTemplate.nodes,
-                  addForm.parentId,
-                  addForm.type
-                )
-              : ""}
-          </div>
-
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={handleSaveChild}
-              className="rounded bg-black px-4 py-2 text-white"
-            >
-              Save
-            </button>
-            <button
-              type="button"
-              onClick={() => setAddForm(null)}
-              className="rounded border px-4 py-2"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
+        <AddChildNodeForm
+          addForm={addForm}
+          setAddForm={setAddForm}
+          selectedTemplate={selectedTemplate}
+          availableTypes={availableTypes}
+          onSave={handleSaveChild}
+          onCancel={() => setAddForm(null)}
+        />
       )}
 
       <div className="rounded border p-4">
