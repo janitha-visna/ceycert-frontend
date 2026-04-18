@@ -12,6 +12,7 @@ import {
 } from "@/features/folder-template-designer/types/folder-tree";
 import { getAllChildTypes,collectDescendantIds } from "@/features/folder-template-designer/lib/tree-helpers";
 import { AddChildNodeForm } from "@/features/folder-template-designer/components/AddChildNodeForm";
+import { CreateTemplateForm } from "@/features/folder-template-designer/components/CreateTemplateForm";
 
 
 export default function Page() {
@@ -171,24 +172,11 @@ export default function Page() {
         </p>
       </div>
 
-      <div className="rounded border p-4 space-y-3">
-        <h2 className="font-semibold">Create New Template</h2>
-        <div className="flex gap-2">
-          <input
-            value={newTemplateName}
-            onChange={(e) => setNewTemplateName(e.target.value)}
-            placeholder="Enter template name"
-            className="flex-1 rounded border px-3 py-2"
-          />
-          <button
-            type="button"
-            onClick={handleCreateTemplate}
-            className="rounded bg-black px-4 py-2 text-white"
-          >
-            Add Template
-          </button>
-        </div>
-      </div>
+      <CreateTemplateForm
+        value={newTemplateName}
+        onChange={setNewTemplateName}
+        onCreate={handleCreateTemplate}
+      />
 
       <div className="rounded border p-4 space-y-3">
         <h2 className="font-semibold">Select Template</h2>

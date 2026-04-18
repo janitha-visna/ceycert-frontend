@@ -23,8 +23,8 @@ export function FolderTree({
       {nodes.map((node) => {
         const hasChildren = node.children.length > 0;
         const isOpen = !!expanded[node.id];
-        const canAddChild = node.type !== "folder";
-        const canDelete = node.type !== "template";
+        const canAddChild = true;
+        const canDelete = true;
 
         return (
           <div key={node.id} className="rounded border p-3">
