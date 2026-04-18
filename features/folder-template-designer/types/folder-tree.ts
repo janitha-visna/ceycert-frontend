@@ -18,3 +18,9 @@ export interface TemplateNode {
 export interface TreeNode extends TemplateNode {
   children: TreeNode[];
 }
+
+export interface TemplateDocument {
+  id: string;
+  name: string;
+  nodes: TemplateNode[];
+}
