@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { FolderTree } from "@/features/folder-tree/components/FolderTree";
-import { initialNodes } from "@/features/folder-tree/mock/template-nodes";
-import { buildTree } from "@/features/folder-tree/lib/build-tree";
-import { generateNextId } from "@/features/folder-tree/lib/generate-next-id";
-import { TemplateNode } from "@/features/folder-tree/types/folder-tree.types";
+import { FolderTree } from "@/features/folder-template-designer/components/FolderTree";
+import { initialNodes } from "@/features/folder-template-designer/mock-data/templates";
+import { buildTree } from "@/features/folder-template-designer/lib/build-tree";
+import { generateNextId } from "@/features/folder-template-designer/lib/generate-next-is";
+import { TemplateNode } from "@/features/folder-template-designer/types/folder-tree";
 
 export default function Page() {
   const [nodes, setNodes] = React.useState<TemplateNode[]>(initialNodes);

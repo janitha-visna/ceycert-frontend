@@ -1,4 +1,4 @@
-import { NodeType, TemplateNode } from "../types/folder-tree.types";
+import { NodeType,TemplateNode } from "../types/folder-tree";
 
 export function generateNextId(
   nodes: TemplateNode[],

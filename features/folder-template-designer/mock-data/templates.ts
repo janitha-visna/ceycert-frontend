@@ -1,4 +1,4 @@
-import { TemplateNode } from "../f-t-d-types/f-t-d-types";
+import { TemplateNode } from "../types/folder-tree";
 
 export const initialNodes: TemplateNode[] = [
   //template 1

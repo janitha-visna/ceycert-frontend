@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { TreeNode } from "../types/folder-tree.types";
+import { TreeNode } from "../types/folder-tree";
 
 interface FolderTreeProps {
   nodes: TreeNode[];
