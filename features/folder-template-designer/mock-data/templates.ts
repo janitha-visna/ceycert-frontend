@@ -11,7 +11,12 @@ export const initialTemplates: TemplateDocument[] = [
         type: "template",
         parentId: null,
       },
+
+      // -------------------
+      // Cycle 1
+      // -------------------
       { id: "cycle1", name: "Cycle 1", type: "cycle", parentId: "template1" },
+
       {
         id: "cycle1.stage1",
         name: "Application",
@@ -42,6 +47,7 @@ export const initialTemplates: TemplateDocument[] = [
           type: "before",
         },
       },
+
       {
         id: "cycle1.stage2",
         name: "Stage 1",
@@ -59,6 +65,49 @@ export const initialTemplates: TemplateDocument[] = [
         name: "Evidence",
         type: "folder",
         parentId: "cycle1.stage2",
+      },
+
+      // -------------------
+      // Cycle 2 (NEW)
+      // -------------------
+      { id: "cycle2", name: "Cycle 2", type: "cycle", parentId: "template1" },
+
+      {
+        id: "cycle2.stage1",
+        name: "Surveillance 1",
+        type: "stage",
+        parentId: "cycle2",
+      },
+      {
+        id: "cycle2.stage1.folder1",
+        name: "Audit Plan",
+        type: "folder",
+        parentId: "cycle2.stage1",
+      },
+      {
+        id: "cycle2.stage1.folder2",
+        name: "Audit Report",
+        type: "folder",
+        parentId: "cycle2.stage1",
+      },
+
+      {
+        id: "cycle2.stage2",
+        name: "Surveillance 2",
+        type: "stage",
+        parentId: "cycle2",
+      },
+      {
+        id: "cycle2.stage2.folder1",
+        name: "Corrective Actions",
+        type: "folder",
+        parentId: "cycle2.stage2",
+      },
+      {
+        id: "cycle2.stage2.folder2",
+        name: "Closure Evidence",
+        type: "folder",
+        parentId: "cycle2.stage2",
       },
     ],
   },

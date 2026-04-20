@@ -3,11 +3,12 @@
 import * as React from "react";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CalendarDays } from "lucide-react";
 
 import { initialTemplates } from "@/features/folder-template-designer/mock-data/templates";
 import { FolderTree } from "@/features/folder-template-designer/components/FolderTree";
 import { AddChildNodeForm } from "@/features/folder-template-designer/components/AddChildNodeForm";
+import { TemplateSchedulerDialog } from "@/features/folder-template-designer/components/TemplateSchedulerDialog";
 
 import { buildTree } from "@/features/folder-template-designer/lib/build-tree";
 import { generateNextId } from "@/features/folder-template-designer/lib/generate-next-is";
@@ -24,7 +25,6 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
 import {
   Dialog,
   DialogContent,
@@ -48,6 +48,8 @@ export default function TemplateDetailPage() {
     type: NodeType;
     name: string;
   } | null>(null);
+
+  const [isSchedulerOpen, setIsSchedulerOpen] = React.useState(false);
 
   const template = templates.find((item) => item.id === templateId);
 
@@ -147,12 +149,17 @@ export default function TemplateDetailPage() {
   return (
     <div className="min-h-screen bg-background p-6 text-foreground">
       <div className="mx-auto max-w-6xl space-y-6">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between gap-3">
           <Button asChild variant="outline" size="sm">
             <Link href="/foldercreation">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Templates
             </Link>
+          </Button>
+
+          <Button onClick={() => setIsSchedulerOpen(true)}>
+            <CalendarDays className="mr-2 h-4 w-4" />
+            Date Scheduler
           </Button>
         </div>
 
@@ -182,6 +189,12 @@ export default function TemplateDetailPage() {
             )}
           </DialogContent>
         </Dialog>
+
+        <TemplateSchedulerDialog
+          isOpen={isSchedulerOpen}
+          onClose={() => setIsSchedulerOpen(false)}
+          template={template}
+        />
 
         <Card>
           <CardHeader>
