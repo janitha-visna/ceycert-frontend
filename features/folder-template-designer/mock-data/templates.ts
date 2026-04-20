@@ -93,4 +93,57 @@ export const initialTemplates: TemplateDocument[] = [
       },
     ],
   },
+  {
+    id: "template3",
+    name: "ISO 14001:2015",
+    nodes: [
+      {
+        id: "template3",
+        name: "ISO 14001:2015",
+        type: "template",
+        parentId: null,
+      },
+
+      { id: "cycle1", name: "Cycle 1", type: "cycle", parentId: "template3" },
+
+      {
+        id: "cycle1.stage1",
+        name: "Environmental Review",
+        type: "stage",
+        parentId: "cycle1",
+      },
+      {
+        id: "cycle1.stage1.folder1",
+        name: "Aspect Impact Register",
+        type: "folder",
+        parentId: "cycle1.stage1",
+      },
+
+      {
+        id: "cycle1.stage2",
+        name: "Compliance Evaluation",
+        type: "stage",
+        parentId: "cycle1",
+      },
+      {
+        id: "cycle1.stage2.folder1",
+        name: "Legal Register",
+        type: "folder",
+        parentId: "cycle1.stage2",
+      },
+
+      {
+        id: "cycle1.stage3",
+        name: "Internal Audit",
+        type: "stage",
+        parentId: "cycle1",
+      },
+      {
+        id: "cycle1.stage3.folder1",
+        name: "Audit Checklist",
+        type: "folder",
+        parentId: "cycle1.stage3",
+      },
+    ],
+  },
 ];

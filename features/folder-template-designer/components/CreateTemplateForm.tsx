@@ -1,6 +1,16 @@
 "use client";
 
 import React from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Field, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 
 type CreateTemplateFormProps = {
   value: string;
@@ -14,23 +24,31 @@ export function CreateTemplateForm({
   onCreate,
 }: CreateTemplateFormProps) {
   return (
-    <div className="rounded border p-4 space-y-3">
-      <h2 className="font-semibold">Create New Template</h2>
-      <div className="flex gap-2">
-        <input
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="Enter template name"
-          className="flex-1 rounded border px-3 py-2"
-        />
-        <button
-          type="button"
-          onClick={onCreate}
-          className="rounded bg-black px-4 py-2 text-white"
-        >
-          Add Template
-        </button>
-      </div>
-    </div>
+    <Card className="border-zinc-200 shadow-sm">
+      <CardHeader>
+        <CardTitle>Create New Template</CardTitle>
+        <CardDescription>
+          Add a new template and start building its folder structure.
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+          <Field className="flex-1">
+            <FieldLabel htmlFor="template-name">Template name</FieldLabel>
+            <Input
+              id="template-name"
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              placeholder="Enter template name"
+            />
+          </Field>
+
+          <Button type="button" onClick={onCreate} className="sm:h-10">
+            Add Template
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
