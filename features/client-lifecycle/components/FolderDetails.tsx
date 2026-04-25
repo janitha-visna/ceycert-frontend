@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Folder } from "../types";
-import { storageService,StorageFile } from "../services/StorageService";
+import { storageService, StorageFile } from "../services/StorageService";
 import {
   ArrowLeft,
   UploadCloud,
   File as FileIcon,
-  MoreVertical,
   Download,
   Trash2,
-  Calendar,
   FileText,
 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 interface FolderDetailsProps {
   folder: Folder;
@@ -37,162 +39,179 @@ export const FolderDetails: React.FC<FolderDetailsProps> = ({
         setLoading(false);
       }
     };
+
     loadFiles();
   }, [folder.id]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setUploading(true);
-      try {
-        const newFile = await storageService.uploadFile(
-          folder.id,
-          e.target.files[0]
-        );
-        setFiles((prev) => [newFile, ...prev]);
-      } catch (error) {
-        alert("Upload failed");
-      } finally {
-        setUploading(false);
-      }
+    if (!e.target.files?.[0]) return;
+
+    setUploading(true);
+
+    try {
+      const newFile = await storageService.uploadFile(
+        folder.id,
+        e.target.files[0]
+      );
+      setFiles((prev) => [newFile, ...prev]);
+    } catch (error) {
+      alert("Upload failed");
+    } finally {
+      setUploading(false);
     }
   };
 
+  const isCompleted = folder.status === "completed";
+
   return (
-    <div className="space-y-6 animate-fadeIn">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <button
-          onClick={onBack}
-          className="flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4 mr-1" />
-          Back to Stage
-        </button>
-      </div>
+    <div className="space-y-6">
+      <Button
+        type="button"
+        variant="ghost"
+        onClick={onBack}
+        className="px-0 text-slate-700 hover:text-slate-900"
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Back to Stage
+      </Button>
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <div className="flex items-start justify-between mb-8">
-          <div>
-            <h2 className="text-2xl font-bold text-slate-900">{folder.name}</h2>
-            <p className="text-slate-500 mt-1">
-              Manage files and documents for this section.
-            </p>
-          </div>
-          <div
-            className={`px-3 py-1 rounded-full text-sm font-medium ${
-              folder.status === "completed"
-                ? "bg-green-100 text-green-700"
-                : "bg-yellow-100 text-yellow-700"
-            }`}
-          >
-            {folder.status === "completed"
-              ? "Status: Complete"
-              : "Status: Pending"}
-          </div>
-        </div>
+      <Card className="border-slate-200 bg-white shadow-sm">
+        <CardContent className="p-6">
+          <div className="mb-8 flex items-start justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-bold text-slate-950">
+                {folder.name}
+              </h2>
+              <p className="mt-1 text-sm text-slate-700">
+                Manage files and documents for this section.
+              </p>
+            </div>
 
-        {/* Upload Area */}
-        <div className="mb-8">
-          <label
-            className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
-              uploading
-                ? "bg-slate-50 border-slate-300"
-                : "border-slate-300 hover:bg-slate-50 hover:border-accent"
-            }`}
-          >
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
+            <Badge
+              variant={isCompleted ? "default" : "secondary"}
+              className={
+                isCompleted
+                  ? "bg-green-100 text-green-700 hover:bg-green-100"
+                  : "bg-yellow-100 text-yellow-800 hover:bg-yellow-100"
+              }
+            >
+              {isCompleted ? "Status: Complete" : "Status: Pending"}
+            </Badge>
+          </div>
+
+          <div className="mb-8">
+            <label
+              className={`flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed transition-colors ${
+                uploading
+                  ? "border-slate-300 bg-slate-50"
+                  : "border-slate-300 hover:border-primary hover:bg-slate-50"
+              }`}
+            >
               {uploading ? (
                 <div className="flex flex-col items-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent mb-2"></div>
-                  <p className="text-sm text-slate-500">
-                    Uploading to AWS Storage...
+                  <div className="mb-3 h-8 w-8 animate-spin rounded-full border-b-2 border-primary" />
+                  <p className="text-sm font-medium text-slate-700">
+                    Uploading to storage...
                   </p>
                 </div>
               ) : (
-                <>
-                  <UploadCloud className="w-8 h-8 text-slate-400 mb-2" />
-                  <p className="text-sm text-slate-500">
-                    <span className="font-semibold text-accent">
+                <div className="flex flex-col items-center text-center">
+                  <UploadCloud className="mb-2 h-8 w-8 text-slate-500" />
+
+                  <p className="text-sm text-slate-700">
+                    <span className="font-semibold text-primary">
                       Click to upload
                     </span>{" "}
                     or drag and drop
                   </p>
-                  <p className="text-xs text-slate-400">
+
+                  <p className="mt-1 text-xs font-medium text-slate-500">
                     PDF, XLSX, DOCX, JPG (MAX. 10MB)
                   </p>
-                </>
-              )}
-            </div>
-            <input
-              type="file"
-              className="hidden"
-              onChange={handleUpload}
-              disabled={uploading}
-            />
-          </label>
-        </div>
-
-        {/* File List */}
-        <div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
-            <FileText className="w-5 h-5 mr-2 text-slate-400" />
-            Uploaded Documents
-          </h3>
-
-          {loading ? (
-            <div className="space-y-3">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="h-16 bg-slate-100 rounded-lg animate-pulse"
-                />
-              ))}
-            </div>
-          ) : files.length === 0 ? (
-            <div className="text-center py-12 bg-slate-50 rounded-lg border border-slate-100">
-              <p className="text-slate-500">No files uploaded yet.</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {files.map((file) => (
-                <div
-                  key={file.id}
-                  className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-lg hover:shadow-md transition-shadow group"
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className="p-2 bg-blue-50 text-accent rounded-lg">
-                      <FileIcon className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-slate-900">
-                        {file.name}
-                      </p>
-                      <p className="text-xs text-slate-500">
-                        {(file.size / 1024).toFixed(0)} KB •{" "}
-                        {new Date(file.uploadDate).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      className="p-2 text-slate-400 hover:text-accent hover:bg-slate-50 rounded-full"
-                      title="Download"
-                    >
-                      <Download className="w-4 h-4" />
-                    </button>
-                    <button
-                      className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-full"
-                      title="Delete"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+              )}
+
+              <input
+                type="file"
+                className="hidden"
+                onChange={handleUpload}
+                disabled={uploading}
+              />
+            </label>
+          </div>
+
+          <div>
+            <h3 className="mb-4 flex items-center text-lg font-semibold text-slate-950">
+              <FileText className="mr-2 h-5 w-5 text-slate-500" />
+              Uploaded Documents
+            </h3>
+
+            {loading ? (
+              <div className="space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="h-16 animate-pulse rounded-lg bg-slate-100"
+                  />
+                ))}
+              </div>
+            ) : files.length === 0 ? (
+              <div className="rounded-lg border border-slate-200 bg-slate-50 py-12 text-center">
+                <p className="text-sm font-medium text-slate-600">
+                  No files uploaded yet.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {files.map((file) => (
+                  <div
+                    key={file.id}
+                    className="group flex items-center justify-between rounded-lg border border-slate-200 bg-white p-4 transition-shadow hover:shadow-md"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="rounded-lg bg-blue-50 p-3 text-primary">
+                        <FileIcon className="h-5 w-5" />
+                      </div>
+
+                      <div>
+                        <p className="text-sm font-semibold text-slate-950">
+                          {file.name}
+                        </p>
+                        <p className="text-xs font-medium text-slate-500">
+                          {(file.size / 1024).toFixed(0)} KB •{" "}
+                          {new Date(file.uploadDate).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        title="Download"
+                        className="text-slate-500 hover:text-primary"
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        title="Delete"
+                        className="text-slate-500 hover:bg-red-50 hover:text-red-600"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

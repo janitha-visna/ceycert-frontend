@@ -8,6 +8,8 @@ import {
   Info,
 } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+
 interface HeaderActionsProps {
   overdueCount: number;
   onOpenHistory: () => void;
@@ -27,62 +29,69 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
 }) => {
   return (
     <>
-      <div className="flex items-center space-x-2 mr-2 border-r border-slate-800 pr-4">
-        <button
+      <div className="mr-2 flex items-center gap-2 border-r border-slate-800 pr-4">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
           onClick={onOpenHistory}
-          className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors"
           title="Assignment History"
+          className="text-slate-400 hover:bg-slate-800 hover:text-white"
         >
-          <Info className="w-5 h-5" />
-        </button>
+          <Info className="h-5 w-5" />
+        </Button>
 
-        <button
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
           onClick={onOpenReminders}
-          className={`flex items-center justify-center p-2 rounded-full transition-colors relative ${
-            overdueCount > 0
-              ? "text-red-400 bg-red-900/30 hover:bg-red-900/50"
-              : "text-slate-400 hover:text-white hover:bg-slate-800"
-          }`}
           title="Notifications"
+          className={`relative ${
+            overdueCount > 0
+              ? "bg-red-900/30 text-red-400 hover:bg-red-900/50 hover:text-red-300"
+              : "text-slate-400 hover:bg-slate-800 hover:text-white"
+          }`}
         >
           {overdueCount > 0 ? (
-            <AlertTriangle className="w-5 h-5" />
+            <AlertTriangle className="h-5 w-5" />
           ) : (
-            <Bell className="w-5 h-5" />
+            <Bell className="h-5 w-5" />
           )}
 
           {overdueCount > 0 && (
-            <span className="absolute top-1 right-1 flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+            <span className="absolute right-1 top-1 flex h-2.5 w-2.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
             </span>
           )}
-        </button>
+        </Button>
       </div>
 
-      <button
+      <Button
+        type="button"
+        variant="outline"
         onClick={onOpenPayments}
-        className="flex items-center px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-sm font-medium text-slate-200 hover:bg-slate-700 hover:text-white transition-colors"
+        className="border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white"
       >
-        <CreditCard className="w-4 h-4 mr-2" />
+        <CreditCard className="mr-2 h-4 w-4" />
         <span className="hidden sm:inline">Payments</span>
-      </button>
+      </Button>
 
-      <button
+      <Button
+        type="button"
+        variant="outline"
         onClick={onOpenClientInfo}
-        className="flex items-center px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-sm font-medium text-slate-200 hover:bg-slate-700 hover:text-white transition-colors"
+        className="border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white"
       >
-        <Phone className="w-4 h-4 mr-2" />
+        <Phone className="mr-2 h-4 w-4" />
         <span className="hidden sm:inline">Client Info</span>
-      </button>
+      </Button>
 
-      <button
-        onClick={onOpenAuditDates}
-        className="flex items-center px-3 py-2 bg-accent border border-transparent rounded-md text-sm font-medium text-white hover:bg-accentHover transition-colors shadow-sm"
-      >
-        <CalendarDays className="w-4 h-4 mr-2" />
+      <Button type="button" onClick={onOpenAuditDates}>
+        <CalendarDays className="mr-2 h-4 w-4" />
         <span className="hidden sm:inline">Audit Dates</span>
-      </button>
+      </Button>
     </>
   );
 };

@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface ModalProps {
   isOpen: boolean;
@@ -33,25 +34,22 @@ export const Modal: React.FC<ModalProps> = ({
           max-h-[90vh]
           overflow-hidden
           rounded-2xl
-          border
-          bg-white
           p-0
-          shadow-2xl
           [&>button]:hidden
         `}
       >
-        {/* Header */}
-        <DialogHeader className="flex-row items-center justify-between border-b px-6 py-4">
-          <DialogTitle className="text-lg font-semibold text-slate-900">
-            {title}
-          </DialogTitle>
+        <DialogHeader className="flex flex-row items-center justify-between border-b px-6 py-4">
+          <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
 
-          <button
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
             onClick={onClose}
-            className="rounded-full p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+            className="h-8 w-8 rounded-full"
           >
-            <X className="h-5 w-5" />
-          </button>
+            <X className="h-4 w-4" />
+          </Button>
         </DialogHeader>
 
         {children}

@@ -2,6 +2,8 @@ import React from "react";
 import { Cycle } from "../types";
 import { ShieldCheck, LogOut, HelpCircle } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+
 interface LayoutProps {
   cycles: Cycle[];
   currentCycleId: string;
@@ -17,7 +19,6 @@ export const Layout: React.FC<LayoutProps> = ({
   cycles,
   currentCycleId,
   currentStageId,
-  onCycleChange,
   onStageChange,
   children,
   headerActions,
@@ -26,59 +27,70 @@ export const Layout: React.FC<LayoutProps> = ({
   const currentCycle = cycles.find((c) => c.id === currentCycleId);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      {/* Row 1: Header (Logo + Actions) */}
-      <header className="bg-slate-900 border-b border-slate-800 shadow-md z-30 sticky top-0 text-white">
-        <div className="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <div className="flex min-h-screen flex-col bg-slate-50 text-slate-950">
+      {/* Row 1: Header */}
+      <header className="sticky top-0 z-30 border-b border-slate-800 bg-slate-900 text-white shadow-md">
+        <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center">
-            <ShieldCheck className="w-7 h-7 text-accent mr-3" />
-            <span className="font-bold text-lg tracking-tight text-white">
+            <ShieldCheck className="mr-3 h-7 w-7 text-primary" />
+            <span className="text-lg font-bold tracking-tight text-white">
               CertManager
             </span>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-4">
             {headerActions}
-            <div className="h-6 w-px bg-slate-700 mx-2 hidden sm:block"></div>
-            <button
-              className="text-slate-400 hover:text-white transition-colors"
+
+            <div className="mx-2 hidden h-6 w-px bg-slate-700 sm:block" />
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
               title="Help"
+              className="text-slate-400 hover:bg-slate-800 hover:text-white"
             >
-              <HelpCircle className="w-5 h-5" />
-            </button>
-            <button
-              className="text-slate-400 hover:text-white transition-colors"
+              <HelpCircle className="h-5 w-5" />
+            </Button>
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
               title="Sign Out"
+              className="text-slate-400 hover:bg-slate-800 hover:text-white"
             >
-              <LogOut className="w-5 h-5" />
-            </button>
+              <LogOut className="h-5 w-5" />
+            </Button>
           </div>
         </div>
       </header>
 
       {/* Row 2: Cycle Selector */}
-      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 py-3 z-20 shadow-sm">
+      <div className="z-20 border-b border-slate-200 bg-white px-4 py-3 shadow-sm sm:px-6 lg:px-8">
         {cycleSelector}
       </div>
 
-      {/* Row 3: Stage Navigation Tabs (Horizontal) */}
+      {/* Row 3: Stage Navigation Tabs */}
       {currentCycle && (
-        <div className="bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 z-10 overflow-x-auto no-scrollbar">
-          <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+        <div className="z-10 overflow-x-auto border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8">
+          <nav className="-mb-px flex gap-8" aria-label="Tabs">
             {currentCycle.stages.map((stage) => {
               const isActive = currentStageId === stage.id;
+
               return (
                 <button
                   key={stage.id}
+                  type="button"
                   onClick={() => onStageChange(stage.id)}
                   className={`
-                                  whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors
-                                  ${
-                                    isActive
-                                      ? "border-accent text-accent"
-                                      : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
-                                  }
-                              `}
+                    whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium transition-colors
+                    ${
+                      isActive
+                        ? "border-primary text-primary"
+                        : "border-transparent text-slate-700 hover:border-slate-300 hover:text-slate-950"
+                    }
+                  `}
                 >
                   {stage.name}
                 </button>
@@ -89,8 +101,8 @@ export const Layout: React.FC<LayoutProps> = ({
       )}
 
       {/* Content Area */}
-      <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto bg-slate-50">
-        <div className="max-w-7xl mx-auto">{children}</div>
+      <main className="flex-1 overflow-y-auto bg-slate-50 p-4 sm:p-6 lg:p-8">
+        <div className="mx-auto max-w-7xl">{children}</div>
       </main>
     </div>
   );
