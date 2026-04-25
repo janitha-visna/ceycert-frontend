@@ -43,64 +43,63 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
       title="Payment History"
       widthClassName="sm:w-[900px]"
     >
-      <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
-        <table className="min-w-full divide-y divide-gray-300">
-          <thead className="bg-gray-50">
-            <tr>
-              <th
-                scope="col"
-                className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900"
-              >
-                Date
-              </th>
-              <th
-                scope="col"
-                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-              >
-                Coverage
-              </th>
-              <th
-                scope="col"
-                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-              >
-                Type
-              </th>
-              <th
-                scope="col"
-                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-              >
-                Amount
-              </th>
-              <th
-                scope="col"
-                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-              >
-                Status
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
-            {payments.map((payment) => (
-              <tr key={payment.id}>
-                <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
-                  {payment.date}
-                </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {payment.coverage}
-                </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {payment.type}
-                </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 font-mono">
-                  {payment.currency} {payment.amount.toLocaleString()}
-                </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  <StatusBadge status={payment.status} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="flex max-h-[calc(90vh-73px)] flex-col">
+        <div className="flex-1 overflow-auto px-6 py-5">
+          <div className="min-w-[760px] overflow-hidden rounded-xl border">
+            <table className="w-full divide-y divide-gray-300">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">
+                    Date
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">
+                    Coverage
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">
+                    Type
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">
+                    Amount
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">
+                    Status
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-gray-200 bg-white">
+                {payments.map((payment) => (
+                  <tr key={payment.id}>
+                    <td className="whitespace-nowrap px-4 py-4 text-sm font-medium text-gray-900">
+                      {payment.date}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-500">
+                      {payment.coverage}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-500">
+                      {payment.type}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-4 text-sm font-mono text-gray-500">
+                      {payment.currency} {payment.amount.toLocaleString()}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-500">
+                      <StatusBadge status={payment.status} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="flex justify-end border-t bg-white px-6 py-4">
+          <button
+            onClick={onClose}
+            className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          >
+            Close
+          </button>
+        </div>
       </div>
     </Modal>
   );

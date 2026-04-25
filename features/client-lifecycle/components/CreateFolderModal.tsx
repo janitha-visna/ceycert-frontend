@@ -34,9 +34,9 @@ export const CreateFolderModal: React.FC<CreateFolderModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title="Create New Folder"
-      widthClassName="max-w-md"
+      widthClassName="sm:w-[480px]"
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4 px-6 py-5">
         <div className="space-y-2">
           <Label htmlFor="folderName">Folder Name</Label>
 

@@ -99,47 +99,50 @@ export const ReminderListModal: React.FC<ReminderListModalProps> = ({
       title="Reminders & Warnings"
       widthClassName="sm:w-[720px]"
     >
-      {/* Filter Tabs */}
-      <div className="flex items-center space-x-1 mb-6 bg-slate-100 p-1 rounded-lg">
-        {(["All", "Overdue", "Pending", "Completed"] as FilterType[]).map(
-          (f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`flex-1 px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
-                filter === f
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
-              }`}
-            >
-              {f}
-            </button>
-          )
-        )}
-      </div>
-
-      <div className="max-h-[60vh] overflow-y-auto pr-2">
-        {filteredReminders.length === 0 ? (
-          <div className="text-center py-12 flex flex-col items-center justify-center text-slate-500">
-            <Filter className="w-10 h-10 mb-3 text-slate-300" />
-            <p>No items found for this filter.</p>
+      <div className="flex max-h-[calc(90vh-73px)] flex-col">
+        <div className="border-b px-6 py-4">
+          <div className="flex items-center space-x-1 rounded-lg bg-slate-100 p-1">
+            {(["All", "Overdue", "Pending", "Completed"] as FilterType[]).map(
+              (f) => (
+                <button
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  className={`flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-all ${
+                    filter === f
+                      ? "bg-white text-slate-900 shadow-sm"
+                      : "text-slate-500 hover:bg-slate-200/50 hover:text-slate-700"
+                  }`}
+                >
+                  {f}
+                </button>
+              )
+            )}
           </div>
-        ) : (
-          <>
-            {renderSection("Overdue Items", overdue, "overdue")}
-            {renderSection("Pending Tasks", pending, "pending")}
-            {renderSection("Completed", completed, "completed")}
-          </>
-        )}
-      </div>
+        </div>
 
-      <div className="mt-6 flex justify-end">
-        <button
-          onClick={onClose}
-          className="px-4 py-2 bg-white border border-slate-300 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-50"
-        >
-          Close
-        </button>
+        <div className="flex-1 overflow-y-auto px-6 py-5">
+          {filteredReminders.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center text-slate-500">
+              <Filter className="mb-3 h-10 w-10 text-slate-300" />
+              <p>No items found for this filter.</p>
+            </div>
+          ) : (
+            <>
+              {renderSection("Overdue Items", overdue, "overdue")}
+              {renderSection("Pending Tasks", pending, "pending")}
+              {renderSection("Completed", completed, "completed")}
+            </>
+          )}
+        </div>
+
+        <div className="flex justify-end border-t bg-white px-6 py-4">
+          <button
+            onClick={onClose}
+            className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          >
+            Close
+          </button>
+        </div>
       </div>
     </Modal>
   );
