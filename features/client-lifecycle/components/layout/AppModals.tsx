@@ -1,11 +1,11 @@
 // components/AppModals.tsx
 
 
-import { PaymentModal } from "../PaymentModal";
-import { ClientInfoModal } from "../ClientInfoModal";
-import { AuditDatesModal } from "../AuditDatesModal";
-import { ReminderListModal } from "../ReminderListModal";
-import { UserHistoryModal } from "../UserHistoryModal";
+import { PaymentModal } from "../modals/PaymentModal";
+import { ClientInfoModal } from "../modals/ClientInfoModal";
+import { AuditDatesModal } from "../modals/AuditDatesModal";
+import { ReminderListModal } from "../modals/ReminderListModal";
+import { UserHistoryModal } from "../modals/UserHistoryModal";
 import { CreateFolderModal } from "../CreateFolderModal";
 
 

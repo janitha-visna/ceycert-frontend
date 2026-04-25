@@ -1,6 +1,6 @@
 import React from "react";
-import { Modal } from "./Modal";
-import { UserAssignment } from "../types";
+import { Modal } from "../Modal";
+import { UserAssignment } from "../../types";
 import { User, History, Users } from "lucide-react";
 
 interface UserHistoryModalProps {

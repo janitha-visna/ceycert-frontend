@@ -1,6 +1,6 @@
 import React from "react";
-import { Modal } from "./Modal";
-import { ClientInfo } from "../types";
+import { Modal } from "../Modal";
+import { ClientInfo } from "../../types";
 import { Mail, Phone, MapPin, Building2, User } from "lucide-react";
 
 interface ClientInfoModalProps {

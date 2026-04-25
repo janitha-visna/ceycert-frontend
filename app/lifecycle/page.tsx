@@ -1,14 +1,14 @@
 "use client";
 
 import React from "react";
-import { Layout } from "@/features/LifeCycleOfClientFile/components/Layout";
-import { FolderGrid } from "@/features/LifeCycleOfClientFile/components/FolderGrid";
-import { FolderDetails } from "@/features/LifeCycleOfClientFile/components/FolderDetails";
-import { HeaderActions } from "@/features/LifeCycleOfClientFile/components/layout/HeaderActions";
-import { CycleSelector } from "@/features/LifeCycleOfClientFile/components/layout/CycleSelector";
-import { AppModals } from "@/features/LifeCycleOfClientFile/components/layout/AppModals";
-import { useModalState } from "@/features/LifeCycleOfClientFile/hooks/useModalState";
-import { useCertificationFlow } from "@/features/LifeCycleOfClientFile/hooks/useCertificationFlow";
+import { Layout } from "@/features/client-lifecycle/components/Layout";
+import { FolderGrid } from "@/features/client-lifecycle/components/FolderGrid";
+import { FolderDetails } from "@/features/client-lifecycle/components/FolderDetails";
+import { HeaderActions } from "@/features/client-lifecycle/components/layout/HeaderActions";
+import { CycleSelector } from "@/features/client-lifecycle/components/layout/CycleSelector";
+import { AppModals } from "@/features/client-lifecycle/components/layout/AppModals";
+import { useModalState } from "@/features/client-lifecycle/hooks/useModalState";
+import { useCertificationFlow } from "@/features/client-lifecycle/hooks/useCertificationFlow";
 import { FolderPlus } from "lucide-react";
 
 export default function LifecyclePage() {

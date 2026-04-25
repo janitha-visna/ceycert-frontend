@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Modal } from "./Modal";
-import { Reminder } from "../types";
+import { Modal } from "../Modal";
+import { Reminder } from "../../types";
 import {
   AlertCircle,
   CheckCircle2,

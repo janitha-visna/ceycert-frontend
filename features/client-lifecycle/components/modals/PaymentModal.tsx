@@ -1,6 +1,6 @@
 import React from "react";
-import { Modal } from "./Modal";
-import { PaymentRecord } from "../types";
+import { Modal } from "../Modal";
+import { PaymentRecord } from "../../types";
 import { CheckCircle2, Clock, AlertCircle } from "lucide-react";
 
 interface PaymentModalProps {

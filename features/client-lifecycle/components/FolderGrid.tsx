@@ -8,7 +8,7 @@ import {
   Clock,
   Trash2,
 } from "lucide-react";
-import { ReminderModal } from "./ReminderModal";
+import { ReminderModal } from "./modals/ReminderModal";
 
 interface FolderGridProps {
   folders: Folder[];

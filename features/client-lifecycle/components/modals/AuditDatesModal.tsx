@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Modal } from "./Modal";
-import { AuditDate } from "../types";
+import { Modal } from "../Modal";
+import { AuditDate } from "../../types";
 import { CalendarDays, Filter } from "lucide-react";
 
 interface AuditDatesModalProps {

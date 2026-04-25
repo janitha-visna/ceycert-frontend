@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal } from "./Modal";
+import { Modal } from "../Modal";
 import { Bell, Calendar } from "lucide-react";
 
 interface ReminderModalProps {
