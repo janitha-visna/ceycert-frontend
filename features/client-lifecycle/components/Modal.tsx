@@ -20,14 +20,14 @@ export const Modal: React.FC<ModalProps> = ({
   onClose,
   title,
   children,
-  maxWidth = "max-w-2xl",
+  maxWidth = "max-w-4xl",
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
-        className={`w-[95vw] ${maxWidth} max-h-[90vh] overflow-hidden`}
+        className={`w-[95vw]  ${maxWidth} max-h-[90vh] overflow-hidden p-0`}
       >
-        <DialogHeader>
+        <DialogHeader className="border-b px-6 py-4">
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
 

@@ -44,20 +44,22 @@ export const AuditDatesModal: React.FC<AuditDatesModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title="Audit Schedule"
-      maxWidth="max-w-5xl"
+      maxWidth="max-w-2xl"
     >
-      <div className="space-y-5">
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
-            {availableCycles.map((cycle) => (
-              <TabsTrigger key={cycle} value={cycle}>
-                {cycle}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+      <div className="flex max-h-[calc(90vh-73px)] flex-col">
+        <div className="border-b px-6 py-4">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-3">
+              {availableCycles.map((cycle) => (
+                <TabsTrigger key={cycle} value={cycle}>
+                  {cycle}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        </div>
 
-        <div className="max-h-[65vh] overflow-y-auto pr-2">
+        <div className="flex-1 overflow-y-auto px-6 py-5">
           {displayedCycles.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
               <CalendarDays className="mb-3 h-10 w-10" />
@@ -73,7 +75,7 @@ export const AuditDatesModal: React.FC<AuditDatesModalProps> = ({
 
                   <CardContent>
                     <div className="overflow-hidden rounded-md border">
-                      <div className="grid grid-cols-4 bg-muted px-4 py-3 text-sm font-medium text-muted-foreground">
+                      <div className="grid grid-cols-[1.5fr_1fr_1fr_1fr] bg-muted px-4 py-3 text-sm font-medium text-muted-foreground">
                         <div>Stage</div>
                         <div>Status</div>
                         <div>Planned Date</div>
@@ -83,7 +85,7 @@ export const AuditDatesModal: React.FC<AuditDatesModalProps> = ({
                       {groupedDates[cycleName].map((item, index) => (
                         <div
                           key={index}
-                          className="grid grid-cols-4 items-center border-t px-4 py-4 text-sm"
+                          className="grid grid-cols-[1.5fr_1fr_1fr_1fr] items-center border-t px-4 py-4 text-sm"
                         >
                           <div className="font-medium">{item.stage}</div>
 
@@ -122,7 +124,7 @@ export const AuditDatesModal: React.FC<AuditDatesModalProps> = ({
           )}
         </div>
 
-        <div className="flex justify-end border-t pt-4">
+        <div className="flex justify-end border-t bg-white px-6 py-4">
           <Button variant="outline" onClick={onClose}>
             Close
           </Button>
