@@ -10,6 +10,7 @@ import { AppModals } from "@/features/client-lifecycle/components/layout/AppModa
 import { useModalState } from "@/features/client-lifecycle/hooks/useModalState";
 import { useCertificationFlow } from "@/features/client-lifecycle/hooks/useCertificationFlow";
 import { FolderPlus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function LifecyclePage() {
   const { modals, openModal, closeModal } = useModalState();
@@ -68,13 +69,10 @@ export default function LifecyclePage() {
                 </p>
               </div>
 
-              <button
-                onClick={() => openModal("createFolder")}
-                className="flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 font-medium text-white shadow-sm transition-colors hover:bg-blue-700"
-              >
+              <Button onClick={() => openModal("createFolder")}>
                 <FolderPlus className="mr-2 h-5 w-5" />
                 Create New Folder
-              </button>
+              </Button>
             </div>
 
             <FolderGrid

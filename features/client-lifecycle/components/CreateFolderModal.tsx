@@ -1,6 +1,10 @@
 import React, { useState } from "react";
-import { Modal } from "./Modal";
 import { FolderPlus } from "lucide-react";
+
+import { Modal } from "./Modal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface CreateFolderModalProps {
   isOpen: boolean;
@@ -17,11 +21,12 @@ export const CreateFolderModal: React.FC<CreateFolderModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (folderName.trim()) {
-      onCreate(folderName);
-      setFolderName("");
-      onClose();
-    }
+
+    if (!folderName.trim()) return;
+
+    onCreate(folderName.trim());
+    setFolderName("");
+    onClose();
   };
 
   return (
@@ -32,35 +37,29 @@ export const CreateFolderModal: React.FC<CreateFolderModalProps> = ({
       maxWidth="max-w-md"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
-            Folder Name
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="folderName">Folder Name</Label>
+
+          <Input
+            id="folderName"
             type="text"
             required
             autoFocus
             value={folderName}
             onChange={(e) => setFolderName(e.target.value)}
             placeholder="e.g. Technical Review"
-            className="block w-full rounded-md border-slate-300 shadow-sm focus:border-accent focus:ring-accent sm:text-sm border p-2"
           />
         </div>
-        <div className="flex justify-end space-x-3 mt-6">
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-4 py-2 bg-white border border-slate-300 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-50"
-          >
+
+        <div className="flex justify-end gap-3 pt-4">
+          <Button type="button" variant="outline" onClick={onClose}>
             Cancel
-          </button>
-          <button
-            type="submit"
-            className="flex items-center px-4 py-2 bg-accent text-white rounded-md text-sm font-medium hover:bg-accentHover"
-          >
-            <FolderPlus className="w-4 h-4 mr-2" />
+          </Button>
+
+          <Button type="submit">
+            <FolderPlus className="mr-2 h-4 w-4" />
             Create Folder
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

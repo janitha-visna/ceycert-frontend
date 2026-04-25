@@ -1,7 +1,12 @@
 import React, { useState } from "react";
+import { CalendarDays } from "lucide-react";
+
 import { Modal } from "../Modal";
 import { AuditDate } from "../../types";
-import { CalendarDays, Filter } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface AuditDatesModalProps {
   isOpen: boolean;
@@ -14,25 +19,20 @@ export const AuditDatesModal: React.FC<AuditDatesModalProps> = ({
   onClose,
   dates,
 }) => {
-  const [activeTab, setActiveTab] = useState<string>("All");
+  const [activeTab, setActiveTab] = useState("All");
 
-  // Extract unique cycles for tabs
   const availableCycles = [
     "All",
     ...Array.from(new Set(dates.map((d) => d.cycleName))).sort(),
   ];
 
-  // Filter dates based on active tab
   const filteredDates =
     activeTab === "All"
       ? dates
       : dates.filter((d) => d.cycleName === activeTab);
 
-  // Group filtered dates by cycle name for display
   const groupedDates = filteredDates.reduce((acc, date) => {
-    if (!acc[date.cycleName]) {
-      acc[date.cycleName] = [];
-    }
+    if (!acc[date.cycleName]) acc[date.cycleName] = [];
     acc[date.cycleName].push(date);
     return acc;
   }, {} as Record<string, AuditDate[]>);
@@ -44,107 +44,89 @@ export const AuditDatesModal: React.FC<AuditDatesModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title="Audit Schedule"
-      maxWidth="max-w-3xl"
+      maxWidth="max-w-5xl"
     >
-      {/* Tabs */}
-      <div className="flex items-center space-x-1 mb-6 bg-slate-100 p-1 rounded-lg">
-        {availableCycles.map((cycle) => (
-          <button
-            key={cycle}
-            onClick={() => setActiveTab(cycle)}
-            className={`flex-1 px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
-              activeTab === cycle
-                ? "bg-white text-slate-900 shadow-sm"
-                : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
-            }`}
-          >
-            {cycle}
-          </button>
-        ))}
-      </div>
+      <div className="space-y-5">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-3">
+            {availableCycles.map((cycle) => (
+              <TabsTrigger key={cycle} value={cycle}>
+                {cycle}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
 
-      <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-2">
-        {displayedCycles.length === 0 ? (
-          <div className="text-center py-12 flex flex-col items-center justify-center text-slate-500">
-            <CalendarDays className="w-10 h-10 mb-3 text-slate-300" />
-            <p>No scheduled audits found for this selection.</p>
-          </div>
-        ) : (
-          displayedCycles.map((cycleName) => (
-            <div
-              key={cycleName}
-              className="border border-slate-200 rounded-lg overflow-hidden animate-fadeIn"
-            >
-              <div className="bg-slate-50 px-4 py-2 border-b border-slate-200">
-                <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wide">
-                  {cycleName}
-                </h3>
-              </div>
-              <div className="divide-y divide-slate-100 bg-white">
-                {groupedDates[cycleName].map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-slate-50 transition-colors"
-                  >
-                    <div className="mb-2 sm:mb-0">
-                      <span className="text-sm font-semibold text-accent block mb-1">
-                        {item.stage}
-                      </span>
-                      <div className="flex items-center space-x-2">
-                        <span
-                          className={`h-2 w-2 rounded-full ${
-                            item.status === "Completed"
-                              ? "bg-green-500"
-                              : item.status === "Delayed"
-                              ? "bg-red-500"
-                              : "bg-blue-500"
-                          }`}
-                        ></span>
-                        <span className="text-xs font-medium text-slate-500">
-                          {item.status}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex space-x-6">
-                      <div className="text-right">
-                        <p className="text-[10px] text-slate-400 uppercase font-bold">
-                          Planned
-                        </p>
-                        <p className="text-sm font-mono text-slate-900">
-                          {item.plannedDate}
-                        </p>
-                      </div>
-                      <div className="text-right w-24">
-                        <p className="text-[10px] text-slate-400 uppercase font-bold">
-                          Actual
-                        </p>
-                        <p
-                          className={`text-sm font-mono font-medium ${
-                            item.actualDate
-                              ? "text-slate-900"
-                              : "text-slate-400 italic"
-                          }`}
-                        >
-                          {item.actualDate || "--"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+        <div className="max-h-[65vh] overflow-y-auto pr-2">
+          {displayedCycles.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
+              <CalendarDays className="mb-3 h-10 w-10" />
+              <p>No scheduled audits found.</p>
             </div>
-          ))
-        )}
-      </div>
+          ) : (
+            <div className="space-y-5">
+              {displayedCycles.map((cycleName) => (
+                <Card key={cycleName}>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base">{cycleName}</CardTitle>
+                  </CardHeader>
 
-      <div className="mt-4 flex justify-end">
-        <button
-          onClick={onClose}
-          className="px-4 py-2 bg-white border border-slate-300 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-50"
-        >
-          Close
-        </button>
+                  <CardContent>
+                    <div className="overflow-hidden rounded-md border">
+                      <div className="grid grid-cols-4 bg-muted px-4 py-3 text-sm font-medium text-muted-foreground">
+                        <div>Stage</div>
+                        <div>Status</div>
+                        <div>Planned Date</div>
+                        <div>Actual Date</div>
+                      </div>
+
+                      {groupedDates[cycleName].map((item, index) => (
+                        <div
+                          key={index}
+                          className="grid grid-cols-4 items-center border-t px-4 py-4 text-sm"
+                        >
+                          <div className="font-medium">{item.stage}</div>
+
+                          <div>
+                            <span
+                              className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
+                                item.status === "Completed"
+                                  ? "bg-green-100 text-green-700"
+                                  : item.status === "Delayed"
+                                  ? "bg-red-100 text-red-700"
+                                  : "bg-blue-100 text-blue-700"
+                              }`}
+                            >
+                              {item.status}
+                            </span>
+                          </div>
+
+                          <div className="font-mono">{item.plannedDate}</div>
+
+                          <div
+                            className={
+                              item.actualDate
+                                ? "font-mono"
+                                : "text-muted-foreground"
+                            }
+                          >
+                            {item.actualDate || "Not completed"}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="flex justify-end border-t pt-4">
+          <Button variant="outline" onClick={onClose}>
+            Close
+          </Button>
+        </div>
       </div>
     </Modal>
   );
