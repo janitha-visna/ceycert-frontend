@@ -28,70 +28,54 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
   onOpenAuditDates,
 }) => {
   return (
-    <>
-      <div className="mr-2 flex items-center gap-2 border-r border-slate-800 pr-4">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          onClick={onOpenHistory}
-          title="Assignment History"
-          className="text-slate-400 hover:bg-slate-800 hover:text-white"
-        >
-          <Info className="h-5 w-5" />
-        </Button>
-
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          onClick={onOpenReminders}
-          title="Notifications"
-          className={`relative ${
-            overdueCount > 0
-              ? "bg-red-900/30 text-red-400 hover:bg-red-900/50 hover:text-red-300"
-              : "text-slate-400 hover:bg-slate-800 hover:text-white"
-          }`}
-        >
-          {overdueCount > 0 ? (
-            <AlertTriangle className="h-5 w-5" />
-          ) : (
-            <Bell className="h-5 w-5" />
-          )}
-
-          {overdueCount > 0 && (
-            <span className="absolute right-1 top-1 flex h-2.5 w-2.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
-            </span>
-          )}
-        </Button>
-      </div>
-
+    <div className="flex items-center gap-3">
+      {/* Assignment History */}
       <Button
-        type="button"
         variant="outline"
-        onClick={onOpenPayments}
-        className="border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white"
+        onClick={onOpenHistory}
+        className="flex items-center gap-2"
       >
+        <Info className="h-4 w-4" />
+        Assignment History
+      </Button>
+
+      {/* Notifications */}
+      <Button
+        variant="outline"
+        onClick={onOpenReminders}
+        className={`relative flex items-center gap-2 ${
+          overdueCount > 0 ? "border-red-300 text-red-600" : ""
+        }`}
+      >
+        {overdueCount > 0 ? (
+          <AlertTriangle className="h-4 w-4" />
+        ) : (
+          <Bell className="h-4 w-4" />
+        )}
+        Notifications
+        {overdueCount > 0 && (
+          <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500" />
+        )}
+      </Button>
+
+      {/* Divider */}
+      <div className="hidden h-6 w-px bg-slate-200 sm:block" />
+
+      {/* Other actions */}
+      <Button variant="outline" onClick={onOpenPayments}>
         <CreditCard className="mr-2 h-4 w-4" />
-        <span className="hidden sm:inline">Payments</span>
+        Payments
       </Button>
 
-      <Button
-        type="button"
-        variant="outline"
-        onClick={onOpenClientInfo}
-        className="border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white"
-      >
+      <Button variant="outline" onClick={onOpenClientInfo}>
         <Phone className="mr-2 h-4 w-4" />
-        <span className="hidden sm:inline">Client Info</span>
+        Client Info
       </Button>
 
-      <Button type="button" onClick={onOpenAuditDates}>
+      <Button variant="outline" onClick={onOpenAuditDates}>
         <CalendarDays className="mr-2 h-4 w-4" />
-        <span className="hidden sm:inline">Audit Dates</span>
+        Audit Dates
       </Button>
-    </>
+    </div>
   );
 };

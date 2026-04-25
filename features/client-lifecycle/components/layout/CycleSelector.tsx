@@ -16,21 +16,17 @@ export const CycleSelector: React.FC<CycleSelectorProps> = ({
 }) => {
   return (
     <div className="w-full sm:w-auto">
-      <label className="mb-1 block text-xs font-semibold uppercase text-slate-500 sm:hidden">
-        Select Cycle
-      </label>
-
       <Tabs
         value={currentCycleId}
         onValueChange={onCycleChange}
         className="inline-flex w-auto"
       >
-        <TabsList className="inline-flex h-auto w-auto gap-1 rounded-lg p-1">
+        <TabsList className="inline-flex h-auto w-auto gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1">
           {cycles.map((cycle) => (
             <TabsTrigger
               key={cycle.id}
               value={cycle.id}
-              className="w-auto px-4 py-1.5 text-sm"
+              className="w-auto rounded-lg px-5 py-1.5 text-sm data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm"
             >
               {cycle.name}
             </TabsTrigger>
