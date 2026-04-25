@@ -97,7 +97,7 @@ export const ReminderListModal: React.FC<ReminderListModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title="Reminders & Warnings"
-      maxWidth="max-w-2xl"
+      widthClassName="sm:w-[720px]"
     >
       {/* Filter Tabs */}
       <div className="flex items-center space-x-1 mb-6 bg-slate-100 p-1 rounded-lg">

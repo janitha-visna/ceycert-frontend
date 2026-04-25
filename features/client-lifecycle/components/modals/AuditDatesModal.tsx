@@ -44,7 +44,7 @@ export const AuditDatesModal: React.FC<AuditDatesModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title="Audit Schedule"
-      maxWidth="max-w-2xl"
+      widthClassName="sm:w-[720px]"
     >
       <div className="flex max-h-[calc(90vh-73px)] flex-col">
         <div className="border-b px-6 py-4">

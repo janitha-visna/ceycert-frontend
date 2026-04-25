@@ -41,7 +41,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title="Payment History"
-      maxWidth="max-w-4xl"
+      widthClassName="sm:w-[900px]"
     >
       <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
         <table className="min-w-full divide-y divide-gray-300">

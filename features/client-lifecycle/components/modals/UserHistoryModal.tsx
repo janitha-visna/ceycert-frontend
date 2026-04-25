@@ -22,7 +22,7 @@ export const UserHistoryModal: React.FC<UserHistoryModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title="Case Assignment History"
-      maxWidth="max-w-lg"
+      widthClassName="sm:w-[680px]"
     >
       <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-1">
         {/* Current Assignment */}

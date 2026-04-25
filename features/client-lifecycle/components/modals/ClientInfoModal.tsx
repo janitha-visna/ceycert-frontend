@@ -15,7 +15,12 @@ export const ClientInfoModal: React.FC<ClientInfoModalProps> = ({
   data,
 }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Client Information">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Client Information"
+      widthClassName="sm:w-[720px]"
+    >
       <div className="space-y-6">
         <div className="flex items-start space-x-4 p-4 bg-slate-50 rounded-lg border border-slate-100">
           <div className="bg-white p-2 rounded-full shadow-sm">

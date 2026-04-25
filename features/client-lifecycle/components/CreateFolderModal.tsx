@@ -34,7 +34,7 @@ export const CreateFolderModal: React.FC<CreateFolderModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title="Create New Folder"
-      maxWidth="max-w-md"
+      widthClassName="max-w-md"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">

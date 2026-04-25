@@ -39,7 +39,7 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title={`Set Reminder: ${folderName}`}
-      maxWidth="max-w-lg"
+       widthClassName="sm:w-[720px]"
     >
       {!isSaved ? (
         <form onSubmit={handleSubmit} className="space-y-4">
