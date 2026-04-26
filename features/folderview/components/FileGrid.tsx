@@ -11,29 +11,17 @@ interface FileGridProps {
   searchQuery: string;
 }
 
-export function FileGrid({
-  items,
-  onNavigate,
-  onModify,
-  searchQuery,
-}: FileGridProps) {
-  const isSearching = searchQuery.trim() !== "";
-
+export function FileGrid({ items, onNavigate, onModify }: FileGridProps) {
   if (items.length === 0) {
     return (
       <Card className="mx-auto mt-10 max-w-md border-dashed">
         <CardContent className="flex min-h-[320px] flex-col items-center justify-center px-6 py-10 text-center">
           <Folder className="mb-4 h-14 w-14 text-muted-foreground/40" />
           <h2 className="mb-2 text-xl font-semibold">No files here</h2>
-          {searchQuery ? (
-            <p className="text-sm text-muted-foreground">
-              We couldn&apos;t find anything matching "{searchQuery}".
-            </p>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              Upload files or create folders to get started.
-            </p>
-          )}
+
+          <p className="text-sm text-muted-foreground">
+            Upload files or create folders to get started.
+          </p>
         </CardContent>
       </Card>
     );
@@ -42,39 +30,15 @@ export function FileGrid({
   const folders = items.filter((i) => i.type === "folder");
   const files = items.filter((i) => i.type !== "folder");
 
-  if (isSearching) {
-    return (
-      <section className="space-y-3 pb-12">
-        <h2 className="px-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Results
-        </h2>
-
-        <div className="rounded-xl border bg-card p-2">
-          <div className="space-y-1">
-            {items.map((item) => (
-              <FileCard
-                key={item.id}
-                item={item}
-                onNavigate={onNavigate}
-                onModify={onModify}
-                layout="list"
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   return (
-    <div className="flex flex-col gap-6 pb-12">
+    <div className="flex flex-col gap-8 pb-12">
       {folders.length > 0 && (
-        <section className="space-y-3">
-          <h2 className="px-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        <section className="space-y-4">
+          <h2 className="px-1 text-sm font-medium text-muted-foreground">
             Folders
           </h2>
 
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {folders.map((folder) => (
               <FileCard
                 key={folder.id}
@@ -91,12 +55,12 @@ export function FileGrid({
       {folders.length > 0 && files.length > 0 && <Separator />}
 
       {files.length > 0 && (
-        <section className="space-y-3">
-          <h2 className="px-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        <section className="space-y-4">
+          <h2 className="px-1 text-sm font-medium text-muted-foreground">
             Files
           </h2>
 
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {files.map((file) => (
               <FileCard
                 key={file.id}

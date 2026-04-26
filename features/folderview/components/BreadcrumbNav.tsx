@@ -18,7 +18,7 @@ interface BreadcrumbNavProps {
 export function BreadcrumbNav({ path, onNavigate }: BreadcrumbNavProps) {
   return (
     <Breadcrumb>
-      <BreadcrumbList className="text-lg font-medium">
+      <BreadcrumbList className="text-sm font-medium text-muted-foreground">
         <BreadcrumbItem>
           <BreadcrumbLink
             href="#"
@@ -26,9 +26,9 @@ export function BreadcrumbNav({ path, onNavigate }: BreadcrumbNavProps) {
               e.preventDefault();
               onNavigate(null);
             }}
-            className="flex items-center gap-2 text-lg hover:text-primary transition-colors"
+            className="flex items-center gap-2 transition-colors hover:text-foreground"
           >
-            <Home className="w-6 h-6" />
+            <Home className="h-5 w-5" />
             <span className="sr-only sm:not-sr-only">Home</span>
           </BreadcrumbLink>
         </BreadcrumbItem>
@@ -38,10 +38,10 @@ export function BreadcrumbNav({ path, onNavigate }: BreadcrumbNavProps) {
 
           return (
             <Fragment key={folder.id}>
-              <BreadcrumbSeparator className="text-lg" />
+              <BreadcrumbSeparator />
               <BreadcrumbItem>
                 {isLast ? (
-                  <BreadcrumbPage className="text-lg font-semibold text-primary">
+                  <BreadcrumbPage className="font-semibold text-foreground">
                     {folder.name}
                   </BreadcrumbPage>
                 ) : (
@@ -51,7 +51,7 @@ export function BreadcrumbNav({ path, onNavigate }: BreadcrumbNavProps) {
                       e.preventDefault();
                       onNavigate(folder.id);
                     }}
-                    className="text-lg hover:text-primary transition-colors"
+                    className="transition-colors hover:text-foreground"
                   >
                     {folder.name}
                   </BreadcrumbLink>

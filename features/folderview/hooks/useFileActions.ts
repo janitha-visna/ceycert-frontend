@@ -2,7 +2,7 @@
 
 import { FileItem } from "../mockData";
 
-type FileAction = "rename" | "trash" | "restore";
+export type FileAction = "rename" | "trash" | "restore";
 
 export function useFileActions(
   setItems: React.Dispatch<React.SetStateAction<FileItem[]>>,
@@ -25,19 +25,19 @@ export function useFileActions(
     }
 
     if (action === "rename") {
-      const newName = window.prompt("Enter new name:", targetItem.name);
-
-      if (newName && newName.trim() !== "") {
-        setItems((prev) =>
-          prev.map((i) =>
-            i.id === targetItem.id ? { ...i, name: newName.trim() } : i,
-          ),
-        );
-      }
+      // Rename needs dialog/input, so we handle it later from FileManager.
+      return;
     }
+  };
+
+  const renameFile = (targetItem: FileItem, newName: string) => {
+    setItems((prev) =>
+      prev.map((i) => (i.id === targetItem.id ? { ...i, name: newName } : i)),
+    );
   };
 
   return {
     modifyFile,
+    renameFile,
   };
 }
