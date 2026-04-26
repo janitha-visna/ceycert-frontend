@@ -27,52 +27,61 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
   onOpenClientInfo,
   onOpenAuditDates,
 }) => {
+  const buttonClass =
+    "h-10 rounded-xl px-4 text-base font-medium tracking-tight shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800";
+
   return (
-    <div className="flex items-center gap-3">
-      {/* Assignment History */}
-      <Button
-        variant="outline"
-        onClick={onOpenHistory}
-        className="flex items-center gap-2"
-      >
-        <Info className="h-4 w-4" />
+    <div className="flex flex-wrap items-center justify-center gap-3">
+      <Button variant="outline" onClick={onOpenHistory} className={buttonClass}>
+        <Info className="mr-2 h-4 w-4" />
         Assignment History
       </Button>
 
-      {/* Notifications */}
       <Button
         variant="outline"
         onClick={onOpenReminders}
-        className={`relative flex items-center gap-2 ${
-          overdueCount > 0 ? "border-red-300 text-red-600" : ""
+        className={`relative ${buttonClass} ${
+          overdueCount > 0
+            ? "border-red-300 text-red-600 hover:bg-red-50 dark:border-red-900/70 dark:text-red-400 dark:hover:bg-red-950/30"
+            : ""
         }`}
       >
         {overdueCount > 0 ? (
-          <AlertTriangle className="h-4 w-4" />
+          <AlertTriangle className="mr-2 h-4 w-4" />
         ) : (
-          <Bell className="h-4 w-4" />
+          <Bell className="mr-2 h-4 w-4" />
         )}
         Notifications
         {overdueCount > 0 && (
-          <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500" />
+          <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white dark:ring-slate-950" />
         )}
       </Button>
 
-      {/* Divider */}
-      <div className="hidden h-6 w-px bg-slate-200 sm:block" />
+      <div className="hidden h-7 w-px bg-slate-200 dark:bg-slate-800 sm:block" />
 
-      {/* Other actions */}
-      <Button variant="outline" onClick={onOpenPayments}>
+      <Button
+        variant="outline"
+        onClick={onOpenPayments}
+        className={buttonClass}
+      >
         <CreditCard className="mr-2 h-4 w-4" />
         Payments
       </Button>
 
-      <Button variant="outline" onClick={onOpenClientInfo}>
+      <Button
+        variant="outline"
+        onClick={onOpenClientInfo}
+        className={buttonClass}
+      >
         <Phone className="mr-2 h-4 w-4" />
         Client Info
       </Button>
 
-      <Button variant="outline" onClick={onOpenAuditDates}>
+      <Button
+        variant="outline"
+        onClick={onOpenAuditDates}
+        className={buttonClass}
+      >
         <CalendarDays className="mr-2 h-4 w-4" />
         Audit Dates
       </Button>

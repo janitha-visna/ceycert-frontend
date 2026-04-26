@@ -11,6 +11,7 @@
 !.yarn/versions
 
 .repomix-output.xml
+/repomix-output.xml
 # testing
 /coverage
 
