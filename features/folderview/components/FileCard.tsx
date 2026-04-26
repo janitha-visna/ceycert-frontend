@@ -32,27 +32,17 @@ export function FileCard({
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }).format(new Date(dateString));
-  };
-
+  // ================= LIST VIEW =================
   if (layout === "list") {
     return (
       <div
         onClick={handleClick}
-        className="group flex items-center justify-between rounded-lg px-3 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-900/60 transition-colors cursor-pointer"
+        className="group flex items-center justify-between rounded-lg px-3 py-2 cursor-pointer transition-colors hover:bg-accent"
       >
         <div className="flex min-w-0 items-center gap-3">
           <div className="shrink-0">{getIconForType(item.type, "w-4 h-4")}</div>
 
-          <span
-            className="truncate text-sm font-medium text-zinc-800 dark:text-zinc-100"
-            title={item.name}
-          >
+          <span className="truncate text-sm font-medium" title={item.name}>
             {item.name}
           </span>
         </div>
@@ -66,7 +56,7 @@ export function FileCard({
                   size="icon"
                   className="opacity-0 group-hover:opacity-100 focus:opacity-100"
                 >
-                  <MoreVertical className="w-4 h-4 text-zinc-500" />
+                  <MoreVertical className="w-4 h-4 text-muted-foreground" />
                 </Button>
               </DropdownMenuTrigger>
 
@@ -124,10 +114,11 @@ export function FileCard({
     );
   }
 
+  // ================= GRID VIEW =================
   return (
     <Card
       onClick={handleClick}
-      className="group cursor-pointer transition-colors hover:bg-accent"
+      className="group cursor-pointer transition-colors hover:bg-accent hover:shadow-sm"
     >
       <CardContent className="flex items-center justify-between px-3 py-3">
         <div className="flex min-w-0 items-center gap-3">
@@ -147,7 +138,7 @@ export function FileCard({
                   size="icon"
                   className="opacity-0 group-hover:opacity-100 focus:opacity-100"
                 >
-                  <MoreVertical className="w-4 h-4 text-zinc-500" />
+                  <MoreVertical className="w-4 h-4 text-muted-foreground" />
                 </Button>
               </DropdownMenuTrigger>
 
