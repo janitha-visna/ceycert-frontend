@@ -128,12 +128,26 @@ export const MOCK_PAYMENTS: PaymentRecord[] = [
 
 export const MOCK_CLIENT: ClientInfo = {
   companyName: "Acme Certifications Ltd.",
-  contactName: "John Doe",
-  email: "j.doe@acme-certs.com",
-  phone: "+1 (555) 012-3456",
   address: "123 Compliance Way, Audit City, ST 90210",
+  latitude: "6.9271",
+  longitude: "79.8612",
+  contacts: [
+    {
+      id: "c1",
+      name: "John Doe",
+      designation: "Management Representative",
+      email: "j.doe@acme-certs.com",
+      phone: "+1 (555) 012-3456",
+    },
+    {
+      id: "c2",
+      name: "Jane Smith",
+      designation: "IT Manager",
+      email: "jane@acme-certs.com",
+      phone: "+1 (555) 987-6543",
+    },
+  ],
 };
-
 export const MOCK_AUDIT_DATES: AuditDate[] = [
   {
     cycleName: "Cycle 1",

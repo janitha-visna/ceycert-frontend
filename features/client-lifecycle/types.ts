@@ -38,13 +38,6 @@ export interface PaymentRecord {
   status: "Paid" | "Pending" | "Overdue";
 }
 
-export interface ClientInfo {
-  companyName: string;
-  contactName: string;
-  email: string;
-  phone: string;
-  address: string;
-}
 
 export interface AuditDate {
   cycleName: string; // Added for grouping
@@ -71,4 +64,20 @@ export interface UserAssignment {
   startDate: string;
   endDate?: string; // If undefined/null, it's the current assignment
   status: "Active" | "Previous";
+}
+
+export interface ContactPerson {
+  id: string;
+  name: string;
+  designation: string;
+  email: string;
+  phone: string;
+}
+
+export interface ClientInfo {
+  companyName: string;
+  address: string;
+  latitude?: string;
+  longitude?: string;
+  contacts: ContactPerson[];
 }
