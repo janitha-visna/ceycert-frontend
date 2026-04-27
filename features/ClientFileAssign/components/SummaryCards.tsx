@@ -24,26 +24,23 @@ const iconMap: Record<string, LucideIcon> = {
 
 export function SummaryCards({ cards }: { cards: SummaryCardProps[] }) {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+    <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {cards.map((item, index) => {
         const Icon = iconMap[item.icon] || Users;
+
         return (
-          <Card
-            key={index}
-            className="border-slate-200 bg-white shadow-sm transition-all hover:shadow-md dark:border-slate-800 dark:bg-slate-950"
-          >
+          <Card key={index} className="transition-all hover:shadow-md">
             <CardContent className="p-5">
               <div className="flex items-center gap-4">
-                <div
-                  className={`p-2.5 rounded-xl ${item.bg} dark:bg-slate-900 border border-slate-100 dark:border-slate-800`}
-                >
-                  <Icon className={`h-5 w-5 ${item.color}`} />
+                <div className="rounded-xl border bg-muted p-2.5">
+                  <Icon className="h-5 w-5 text-muted-foreground" />
                 </div>
+
                 <div>
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                  <p className="text-xs font-medium text-muted-foreground">
                     {item.title}
                   </p>
-                  <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+                  <h3 className="text-2xl font-bold tracking-tight">
                     {item.value}
                   </h3>
                 </div>

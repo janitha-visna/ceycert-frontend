@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 import { FileText } from "lucide-react";
 import {
   AssignedFile,
@@ -47,11 +48,11 @@ export function ViewFilesDialog({
             files.map((file) => (
               <div
                 key={file.id}
-                className="flex items-center justify-between rounded-xl border border-slate-200 p-4 dark:border-slate-800"
+                className="flex items-center justify-between rounded-xl border border-border bg-card p-4"
               >
                 <div className="flex items-center gap-3">
-                  <div className="rounded-lg bg-slate-100 p-2 dark:bg-slate-900">
-                    <FileText className="h-4 w-4 text-slate-500" />
+                  <div className="rounded-lg bg-muted p-2">
+                    <FileText className="h-4 w-4 text-muted-foreground" />
                   </div>
 
                   <div>
@@ -62,9 +63,7 @@ export function ViewFilesDialog({
                   </div>
                 </div>
 
-                <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-medium dark:bg-slate-900">
-                  {file.status}
-                </span>
+                <Badge variant="secondary">{file.status}</Badge>
               </div>
             ))
           )}
