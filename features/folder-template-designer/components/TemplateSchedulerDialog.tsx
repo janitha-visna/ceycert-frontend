@@ -23,26 +23,22 @@ import { CalendarDays, Clock, Plus, Trash2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TemplateDocument } from "../types/folder-tree";
-
-type OffsetUnit = "days" | "months";
-type RuleType = "before" | "after";
+import {
+  SchedulingRule,
+  TemplateDocument,
+  TemplateNode,
+} from "../types/folder-tree";
+import { updateFolderTemplate } from "../api/folder-template-api";
 
 interface DateVariable {
   id: string;
   name: string;
 }
 
-interface SchedulingRule {
-  variableId: string;
-  offsetValue: number;
-  offsetUnit: OffsetUnit;
-  type: RuleType;
-}
-
 interface FolderItem {
   id: string;
   name: string;
+  schedulingRule: SchedulingRule | null;
 }
 
 interface CycleGroup {
@@ -55,25 +51,42 @@ interface TemplateSchedulerDialogProps {
   isOpen: boolean;
   onClose: () => void;
   template: TemplateDocument | null;
+  onTemplateUpdated?: (template: TemplateDocument) => void;
+}
+
+function isDescendantOfCycle(
+  nodeId: string,
+  cycleId: string,
+  nodes: TemplateDocument["nodes"],
+): boolean {
+  let currentNode = nodes.find((node) => node.id === nodeId);
+
+  while (currentNode?.parentId) {
+    if (currentNode.parentId === cycleId) {
+      return true;
+    }
+
+    currentNode = nodes.find((node) => node.id === currentNode?.parentId);
+  }
+
+  return false;
 }
 
 function buildCycleGroups(template: TemplateDocument | null): CycleGroup[] {
   if (!template) return [];
 
   const cycles = template.nodes.filter((node) => node.type === "cycle");
-  const stages = template.nodes.filter((node) => node.type === "stage");
   const folders = template.nodes.filter((node) => node.type === "folder");
 
   return cycles.map((cycle) => {
-    const stageIds = stages
-      .filter((stage) => stage.parentId === cycle.id)
-      .map((stage) => stage.id);
-
     const cycleFolders = folders
-      .filter((folder) => folder.parentId && stageIds.includes(folder.parentId))
+      .filter((folder) =>
+        isDescendantOfCycle(folder.id, cycle.id, template.nodes),
+      )
       .map((folder) => ({
         id: folder.id,
         name: folder.name,
+        schedulingRule: folder.schedulingRule ?? null,
       }));
 
     return {
@@ -88,42 +101,39 @@ export function TemplateSchedulerDialog({
   isOpen,
   onClose,
   template,
+  onTemplateUpdated,
 }: TemplateSchedulerDialogProps) {
-  const cycleGroups = React.useMemo(
-    () => buildCycleGroups(template),
-    [template]
-  );
-
   const [localVariables, setLocalVariables] = React.useState<DateVariable[]>([
     { id: "v1", name: "Stage 1 Audit Date" },
     { id: "v2", name: "Stage 2 Audit Date" },
   ]);
 
   const [localRules, setLocalRules] = React.useState<
-    Record<string, SchedulingRule | undefined>
+    Record<string, SchedulingRule | null>
   >({});
 
   const [newVarName, setNewVarName] = React.useState("");
+  const [saving, setSaving] = React.useState(false);
+
+  const cycleGroups = React.useMemo(
+    () => buildCycleGroups(template),
+    [template],
+  );
 
   React.useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || !template) return;
 
-    setLocalVariables([
-      { id: "v1", name: "Stage 1 Audit Date" },
-      { id: "v2", name: "Stage 2 Audit Date" },
-    ]);
+    const initialRules: Record<string, SchedulingRule | null> = {};
 
-    const initialRules: Record<string, SchedulingRule | undefined> = {};
-
-    cycleGroups.forEach((cycle) => {
-      cycle.folders.forEach((folder) => {
-        initialRules[folder.id] = undefined;
-      });
+    template.nodes.forEach((node) => {
+      if (node.type === "folder") {
+        initialRules[node.id] = node.schedulingRule ?? null;
+      }
     });
 
     setLocalRules(initialRules);
     setNewVarName("");
-  }, [isOpen, cycleGroups]);
+  }, [isOpen, template]);
 
   const handleAddVariable = () => {
     const trimmed = newVarName.trim();
@@ -146,7 +156,7 @@ export function TemplateSchedulerDialog({
 
       Object.keys(updated).forEach((folderId) => {
         if (updated[folderId]?.variableId === id) {
-          updated[folderId] = undefined;
+          updated[folderId] = null;
         }
       });
 
@@ -159,26 +169,26 @@ export function TemplateSchedulerDialog({
       ...prev,
       [folderId]: enabled
         ? {
-            variableId: "",
+            variableId: localVariables[0]?.id ?? "",
             offsetValue: 0,
             offsetUnit: "days",
             type: "before",
           }
-        : undefined,
+        : null,
     }));
   };
 
   const handleUpdateRule = (
     folderId: string,
     field: keyof SchedulingRule,
-    value: string | number
+    value: string | number,
   ) => {
     setLocalRules((prev) => {
       const current = prev[folderId] ?? {
-        variableId: "",
+        variableId: localVariables[0]?.id ?? "",
         offsetValue: 0,
-        offsetUnit: "days" as OffsetUnit,
-        type: "before" as RuleType,
+        offsetUnit: "days",
+        type: "before",
       };
 
       return {
@@ -191,43 +201,69 @@ export function TemplateSchedulerDialog({
     });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!template) return;
 
-    const finalPayload = {
-      templateId: template.id,
-      templateName: template.name,
+    try {
+      setSaving(true);
 
-      variables: localVariables,
+      const updatedNodes: TemplateNode[] = template.nodes.map((node) => {
+        if (node.type !== "folder") {
+          return {
+            ...node,
+            schedulingRule: node.schedulingRule ?? null,
+          };
+        }
 
-      rules: Object.entries(localRules)
-        .filter(([_, rule]) => rule !== undefined)
-        .map(([folderId, rule]) => ({
-          folderId,
-          ...rule,
-        })),
-    };
+        const rule = localRules[node.id];
 
-    console.log("FINAL JSON:", finalPayload);
+        return {
+          ...node,
+          schedulingRule: rule
+            ? {
+                variableId: rule.variableId,
+                offsetValue: Number(rule.offsetValue),
+                offsetUnit: rule.offsetUnit,
+                type: rule.type,
+              }
+            : null,
+        };
+      });
 
-    onClose();
+      console.log("UPDATED NODES BEFORE SAVE:", updatedNodes);
+
+      const updatedTemplate = await updateFolderTemplate(template.id, {
+        nodes: updatedNodes,
+      });
+
+      console.log("UPDATED TEMPLATE FROM BACKEND:", updatedTemplate);
+
+      onTemplateUpdated?.(updatedTemplate);
+      onClose();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to save scheduling rules");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[900px] h-[90vh] flex flex-col p-0 overflow-hidden">
+      <DialogContent className="flex h-[90vh] flex-col overflow-hidden p-0 sm:max-w-[900px]">
         <DialogHeader className="shrink-0 p-6 pb-0">
           <DialogTitle className="flex items-center gap-2 text-xl">
-            <Clock className="w-6 h-6 text-primary" />
+            <Clock className="h-6 w-6 text-primary" />
             Template Scheduler & Variables
           </DialogTitle>
+
           <DialogDescription>
             Manage date variables and scheduling rules for this template.
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 min-h-0">
-          <div className="p-6 pt-4 space-y-6">
+        <ScrollArea className="min-h-0 flex-1">
+          <div className="space-y-6 p-6 pt-4">
             <div className="space-y-2">
               <p className="text-sm font-medium">
                 Template: {template?.name ?? "No template selected"}
@@ -238,13 +274,13 @@ export function TemplateSchedulerDialog({
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold flex items-center gap-2">
-                <CalendarDays className="w-4 h-4 text-primary" />
+              <h3 className="flex items-center gap-2 text-sm font-semibold">
+                <CalendarDays className="h-4 w-4 text-primary" />
                 1. Define Template Variables
               </h3>
 
               <div className="flex items-end gap-2">
-                <div className="grid gap-1.5 flex-1">
+                <div className="grid flex-1 gap-1.5">
                   <Label htmlFor="newVar" className="text-xs">
                     New Variable Name
                   </Label>
@@ -253,7 +289,11 @@ export function TemplateSchedulerDialog({
                     placeholder="e.g. Stage 1 Audit Date"
                     value={newVarName}
                     onChange={(e) => setNewVarName(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleAddVariable()}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleAddVariable();
+                      }
+                    }}
                     className="h-9"
                   />
                 </div>
@@ -264,7 +304,7 @@ export function TemplateSchedulerDialog({
                   size="sm"
                   className="h-9"
                 >
-                  <Plus className="w-4 h-4 mr-2" />
+                  <Plus className="mr-2 h-4 w-4" />
                   Add Variable
                 </Button>
               </div>
@@ -273,46 +313,41 @@ export function TemplateSchedulerDialog({
                 {localVariables.map((variable) => (
                   <div
                     key={variable.id}
-                    className="flex items-center gap-2 bg-primary/5 border border-primary/20 rounded-full pl-3 pr-1 py-1"
+                    className="flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 py-1 pl-3 pr-1"
                   >
                     <span className="text-xs font-medium text-primary">
                       {variable.name}
                     </span>
+
                     <Button
                       variant="ghost"
                       size="icon"
                       className="h-5 w-5 rounded-full hover:bg-destructive/10 hover:text-destructive"
                       onClick={() => handleRemoveVariable(variable.id)}
                     >
-                      <Trash2 className="w-3 h-3" />
+                      <Trash2 className="h-3 w-3" />
                     </Button>
                   </div>
                 ))}
-
-                {localVariables.length === 0 && (
-                  <p className="text-xs text-muted-foreground italic">
-                    No variables defined yet.
-                  </p>
-                )}
               </div>
             </div>
 
             <Separator />
 
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold flex items-center gap-2">
-                <Clock className="w-4 h-4 text-primary" />
+              <h3 className="flex items-center gap-2 text-sm font-semibold">
+                <Clock className="h-4 w-4 text-primary" />
                 2. Configure Folder Rules
               </h3>
 
               {cycleGroups.length > 0 ? (
                 <Tabs defaultValue={cycleGroups[0]?.id} className="w-full">
-                  <TabsList className="w-fit justify-start h-9 bg-muted/50 p-1 mb-4">
+                  <TabsList className="mb-4 h-9 w-fit justify-start bg-muted/50 p-1">
                     {cycleGroups.map((cycle) => (
                       <TabsTrigger
                         key={cycle.id}
                         value={cycle.id}
-                        className="text-xs px-3 h-7 capitalize data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                        className="h-7 px-3 text-xs capitalize"
                       >
                         {cycle.name}
                       </TabsTrigger>
@@ -323,18 +358,18 @@ export function TemplateSchedulerDialog({
                     <TabsContent
                       key={cycle.id}
                       value={cycle.id}
-                      className="mt-0 outline-none"
+                      className="mt-0"
                     >
                       <div className="space-y-3 pb-2">
                         {cycle.folders.length === 0 ? (
-                          <div className="text-center py-12 border-2 border-dashed rounded-xl text-muted-foreground bg-muted/10">
+                          <div className="rounded-xl border-2 border-dashed bg-muted/10 py-12 text-center text-muted-foreground">
                             <p className="text-xs">
                               No folders found in this cycle.
                             </p>
                           </div>
                         ) : (
                           <div className="grid gap-2">
-                            <div className="grid grid-cols-12 gap-4 px-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                            <div className="grid grid-cols-12 gap-4 px-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                               <div className="col-span-4">Folder Name</div>
                               <div className="col-span-8">Scheduling Rule</div>
                             </div>
@@ -345,9 +380,9 @@ export function TemplateSchedulerDialog({
                               return (
                                 <div
                                   key={folder.id}
-                                  className="grid grid-cols-12 gap-4 items-center p-3 rounded-lg border bg-muted/30 group hover:bg-muted/50 transition-colors"
+                                  className="grid grid-cols-12 items-center gap-4 rounded-lg border bg-muted/30 p-3"
                                 >
-                                  <div className="col-span-4 font-medium text-sm truncate">
+                                  <div className="col-span-4 truncate text-sm font-medium">
                                     {folder.name}
                                   </div>
 
@@ -358,23 +393,23 @@ export function TemplateSchedulerDialog({
                                       onChange={(e) =>
                                         handleToggleRule(
                                           folder.id,
-                                          e.target.checked
+                                          e.target.checked,
                                         )
                                       }
-                                      className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                                      className="h-4 w-4"
                                     />
 
                                     {rule ? (
-                                      <div className="flex items-center gap-2 flex-1 flex-wrap">
+                                      <div className="flex flex-1 flex-wrap items-center gap-2">
                                         <Input
                                           type="number"
-                                          className="w-16 h-8 text-xs font-mono"
+                                          className="h-8 w-16 text-xs"
                                           value={rule.offsetValue}
                                           onChange={(e) =>
                                             handleUpdateRule(
                                               folder.id,
                                               "offsetValue",
-                                              parseInt(e.target.value) || 0
+                                              Number(e.target.value),
                                             )
                                           }
                                         />
@@ -385,11 +420,11 @@ export function TemplateSchedulerDialog({
                                             handleUpdateRule(
                                               folder.id,
                                               "offsetUnit",
-                                              value
+                                              value,
                                             )
                                           }
                                         >
-                                          <SelectTrigger className="h-8 text-xs w-24">
+                                          <SelectTrigger className="h-8 w-24 text-xs">
                                             <SelectValue />
                                           </SelectTrigger>
                                           <SelectContent>
@@ -408,11 +443,11 @@ export function TemplateSchedulerDialog({
                                             handleUpdateRule(
                                               folder.id,
                                               "type",
-                                              value
+                                              value,
                                             )
                                           }
                                         >
-                                          <SelectTrigger className="h-8 text-xs w-24">
+                                          <SelectTrigger className="h-8 w-24 text-xs">
                                             <SelectValue />
                                           </SelectTrigger>
                                           <SelectContent>
@@ -431,11 +466,11 @@ export function TemplateSchedulerDialog({
                                             handleUpdateRule(
                                               folder.id,
                                               "variableId",
-                                              value
+                                              value,
                                             )
                                           }
                                         >
-                                          <SelectTrigger className="h-8 text-xs flex-1 min-w-[180px]">
+                                          <SelectTrigger className="h-8 min-w-[180px] flex-1 text-xs">
                                             <SelectValue placeholder="Select variable" />
                                           </SelectTrigger>
                                           <SelectContent>
@@ -451,7 +486,7 @@ export function TemplateSchedulerDialog({
                                         </Select>
                                       </div>
                                     ) : (
-                                      <span className="text-xs text-muted-foreground italic">
+                                      <span className="text-xs italic text-muted-foreground">
                                         No rule set
                                       </span>
                                     )}
@@ -466,8 +501,8 @@ export function TemplateSchedulerDialog({
                   ))}
                 </Tabs>
               ) : (
-                <div className="flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-8 text-center space-y-2">
-                  <Clock className="w-8 h-8 text-muted-foreground" />
+                <div className="flex flex-col items-center justify-center space-y-2 rounded-xl border-2 border-dashed p-8 text-center">
+                  <Clock className="h-8 w-8 text-muted-foreground" />
                   <p className="text-sm font-medium">No Cycles Found</p>
                   <p className="text-xs text-muted-foreground">
                     Add cycles to your template to configure folder rules.
@@ -478,12 +513,13 @@ export function TemplateSchedulerDialog({
           </div>
         </ScrollArea>
 
-        <DialogFooter className="shrink-0 p-6 border-t bg-muted/20">
+        <DialogFooter className="shrink-0 border-t bg-muted/20 p-6">
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={handleSave} className="px-8">
-            Save Changes
+
+          <Button onClick={handleSave} disabled={saving} className="px-8">
+            {saving ? "Saving..." : "Save Changes"}
           </Button>
         </DialogFooter>
       </DialogContent>

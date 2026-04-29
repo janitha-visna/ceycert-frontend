@@ -4,8 +4,6 @@ import Link from "next/link";
 import {
   LayoutGrid,
   MoreVertical,
-  Pencil,
-  CalendarClock,
   Trash2,
 } from "lucide-react";
 
@@ -19,14 +17,14 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-
 import { TemplateDocument } from "../types/folder-tree";
 
 type TemplateCardProps = {
-  template: TemplateDocument,
+  template: TemplateDocument;
+  onDelete: (template: TemplateDocument) => void;
 };
 
-export function TemplateCard({ template }: TemplateCardProps) {
+export function TemplateCard({ template, onDelete }: TemplateCardProps) {
   return (
     <Link href={`/foldercreation/${template.id}`} className="block">
       <Card className="group relative cursor-pointer overflow-hidden transition-all hover:border-primary/50 hover:shadow-md">
@@ -41,26 +39,21 @@ export function TemplateCard({ template }: TemplateCardProps) {
                 onClick={(e) => e.preventDefault()}
                 className={cn(
                   buttonVariants({ variant: "ghost", size: "icon" }),
-                  "h-8 w-8 opacity-100"
+                  "h-8 w-8 opacity-100",
                 )}
               >
                 <MoreVertical className="h-4 w-4" />
               </DropdownMenuTrigger>
 
               <DropdownMenuContent align="end">
-                <DropdownMenuItem className="gap-2">
-                  <Pencil className="h-4 w-4" />
-                  Rename
-                </DropdownMenuItem>
-
-                <DropdownMenuItem className="gap-2">
-                  <CalendarClock className="h-4 w-4" />
-                  Date Scheduler
-                </DropdownMenuItem>
-
-                <DropdownMenuSeparator />
-
-                <DropdownMenuItem className="gap-2 text-destructive focus:text-destructive">
+                
+                <DropdownMenuItem
+                  className="gap-2 text-destructive focus:text-destructive"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onDelete(template);
+                  }}
+                >
                   <Trash2 className="h-4 w-4" />
                   Delete
                 </DropdownMenuItem>

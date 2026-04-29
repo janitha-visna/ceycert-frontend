@@ -12,7 +12,7 @@ export interface TemplateNode {
   name: string;
   type: NodeType;
   parentId: string | null;
-  schedulingRule?: SchedulingRule;
+  schedulingRule: SchedulingRule | null;
 }
 
 export interface TreeNode extends TemplateNode {
@@ -23,4 +23,7 @@ export interface TemplateDocument {
   id: string;
   name: string;
   nodes: TemplateNode[];
+  status?: "active" | "archived";
+  createdAt?: string;
+  updatedAt?: string;
 }
