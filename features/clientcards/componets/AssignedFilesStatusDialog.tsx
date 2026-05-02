@@ -5,7 +5,10 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
+
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+
 import { StatusSummary } from "../types/client";
 import { SCHEME_COLORS } from "../constants/client";
 
@@ -20,87 +23,81 @@ export function AssignedFilesStatusDialog({
   onOpenChange,
   summary,
 }: AssignedFilesStatusDialogProps) {
+  const schemeEntries = Object.entries(summary.byScheme)
+    .filter(([, count]) => count > 0)
+    .sort((a, b) => b[1] - a[1]);
+
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-md p-0">
-        <SheetHeader className="p-6 border-b border-slate-100 text-left">
-          <SheetTitle className="text-lg font-bold text-slate-900">
-            Assigned Files Status
-          </SheetTitle>
+      {/* ❗ REMOVE overflow here */}
+      <SheetContent side="right" className="w-full sm:max-w-lg p-0">
+        {/* HEADER */}
+        <SheetHeader className="px-6 py-5 border-b">
+          <SheetTitle>Assigned Files Status</SheetTitle>
           <SheetDescription>
-            Overview of your assigned client files by status and scheme.
+            Summary of assigned client files by status and scheme.
           </SheetDescription>
         </SheetHeader>
 
-        <div className="p-6 space-y-6">
-          <div className="grid grid-cols-3 gap-3">
-            <div className="rounded-xl border bg-slate-50 p-4">
-              <p className="text-xs font-semibold text-slate-500">Total</p>
-              <p className="text-2xl font-bold">{summary.total}</p>
-            </div>
-
-            <div className="rounded-xl border border-emerald-100 bg-emerald-50 p-4">
-              <p className="text-xs font-semibold text-emerald-600">Active</p>
-              <p className="text-2xl font-bold text-emerald-700">
-                {summary.active}
-              </p>
-            </div>
-
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <p className="text-xs font-semibold text-slate-500">Inactive</p>
-              <p className="text-2xl font-bold text-slate-700">
-                {summary.inactive}
-              </p>
-            </div>
+        {/* ✅ SCROLLABLE CONTENT */}
+        <div className="no-scrollbar h-[calc(100vh-80px)] overflow-y-auto px-6 py-6 space-y-8">
+          {/* SUMMARY */}
+          <div className="grid grid-cols-3 gap-4">
+            <SummaryBox label="Total" value={summary.total} />
+            <SummaryBox label="Active" value={summary.active} />
+            <SummaryBox label="Inactive" value={summary.inactive} />
           </div>
 
+          <Separator />
+
+          {/* SCHEME SECTION */}
           <div>
-            <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-slate-400">
+            <h3 className="mb-4 text-sm font-semibold text-slate-900">
               Files by Scheme
             </h3>
 
-            <div className="grid grid-cols-3 gap-3 max-h-[calc(100vh-260px)] overflow-y-auto pr-1">
-              {(Object.entries(summary.byScheme) as [string, number][])
-                .filter(([, count]) => count > 0)
-                .sort((a, b) => b[1] - a[1])
-                .map(([scheme, count]) => {
-                  const colorClasses =
-                    SCHEME_COLORS[scheme as keyof typeof SCHEME_COLORS] ||
-                    "bg-slate-100 text-slate-700 border-slate-200";
+            <div className="grid grid-cols-2 gap-4">
+              {schemeEntries.map(([scheme, count]) => {
+                const colorClasses =
+                  SCHEME_COLORS[scheme as keyof typeof SCHEME_COLORS];
 
-                  const bg = colorClasses.split(" ")[0];
-                  const text = colorClasses.split(" ")[1];
+                return (
+                  <Card
+                    key={scheme}
+                    className="hover:shadow-md transition rounded-xl"
+                  >
+                    <CardContent className="flex items-center justify-between p-4">
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">
+                          {scheme}
+                        </p>
+                        <p className="text-xs text-slate-500">Assigned files</p>
+                      </div>
 
-                  return (
-                    <div
-                      key={scheme}
-                      className="rounded-xl border border-slate-100 bg-white p-3 shadow-sm flex flex-col items-center justify-center text-center hover:shadow-md transition"
-                    >
-                      {/* Color dot */}
-                      <div className={`w-2.5 h-2.5 rounded-full mb-2 ${bg}`} />
-
-                      {/* Scheme */}
-                      <p className={`text-xs font-semibold ${text}`}>
-                        {scheme}
-                      </p>
-
-                      {/* Count */}
-                      <p className="text-lg font-bold text-slate-900 mt-1">
+                      <div
+                        className={`rounded-full border px-3 py-1 text-sm font-bold ${colorClasses}`}
+                      >
                         {count}
-                      </p>
-
-                      <p className="text-[10px] text-slate-400 uppercase">
-                        files
-                      </p>
-                    </div>
-                  );
-                })}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </div>
         </div>
-
-        
       </SheetContent>
     </Sheet>
+  );
+}
+
+function SummaryBox({ label, value }: { label: string; value: number }) {
+  return (
+    <Card className="rounded-xl">
+      <CardContent className="p-4">
+        <p className="text-xs text-slate-500">{label}</p>
+        <p className="text-2xl font-bold text-slate-900">{value}</p>
+      </CardContent>
+    </Card>
   );
 }

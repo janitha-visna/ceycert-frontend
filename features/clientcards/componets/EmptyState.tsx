@@ -1,5 +1,6 @@
-import { FolderX } from "lucide-react";
+import { FolderSearch } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface EmptyStateProps {
   onClearFilters: () => void;
@@ -7,24 +8,24 @@ interface EmptyStateProps {
 
 export function EmptyState({ onClearFilters }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-32 px-4 text-center">
-      <div className="bg-slate-100 p-6 rounded-2xl mb-6">
-        <FolderX className="h-10 w-10 text-slate-300" />
-      </div>
-      <h3 className="text-xl font-bold text-slate-900 tracking-tight">
-        No results found
-      </h3>
-      <p className="text-slate-500 max-w-sm mb-8 mt-2 text-sm leading-relaxed">
-        We couldn't find any client files matching your current search or filter
-        criteria. Try adjusting your filters.
-      </p>
-      <Button
-        onClick={onClearFilters}
-        variant="outline"
-        className="h-10 px-6 rounded-lg text-sm border-slate-200 hover:bg-slate-50 text-slate-600"
-      >
-        Clear all filters
-      </Button>
-    </div>
+    <Card className="mx-auto mt-16 max-w-md border-dashed bg-white">
+      <CardContent className="flex flex-col items-center justify-center px-6 py-12 text-center">
+        <div className="mb-5 rounded-full bg-slate-100 p-4">
+          <FolderSearch className="h-9 w-9 text-slate-400" />
+        </div>
+
+        <h3 className="text-lg font-semibold text-slate-900">
+          No client files found
+        </h3>
+
+        <p className="mt-2 text-sm text-slate-500">
+          Try changing the search keyword, scheme, or status filter.
+        </p>
+
+        <Button variant="outline" className="mt-6" onClick={onClearFilters}>
+          Clear filters
+        </Button>
+      </CardContent>
+    </Card>
   );
 }

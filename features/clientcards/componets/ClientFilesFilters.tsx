@@ -1,5 +1,6 @@
-import { Search, Filter, RotateCcw } from "lucide-react";
+import { RotateCcw, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -7,17 +8,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+
 import { SCHEMES, STATUSES } from "../constants/client";
-import { Scheme, ClientStatus } from "../types/client";
+import { ClientStatus, Scheme } from "../types/client";
 
 interface ClientFilesFiltersProps {
   searchQuery: string;
-  setSearchQuery: (val: string) => void;
+  setSearchQuery: (value: string) => void;
   selectedScheme: Scheme | "all";
-  setSelectedScheme: (val: Scheme | "all") => void;
+  setSelectedScheme: (value: Scheme | "all") => void;
   selectedStatus: ClientStatus | "all";
-  setSelectedStatus: (val: ClientStatus | "all") => void;
+  setSelectedStatus: (value: ClientStatus | "all") => void;
   onReset: () => void;
 }
 
@@ -31,27 +32,24 @@ export function ClientFilesFilters({
   onReset,
 }: ClientFilesFiltersProps) {
   return (
-    <section className="px-8 py-5 bg-white border-b border-slate-200 flex flex-col md:flex-row items-center gap-4">
-      {/* Search Bar */}
-      <div className="relative flex-grow w-full md:w-auto">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-slate-400" />
-        <Input
-          placeholder="Search by organization, folder, or scheme..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 bg-slate-50 border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 h-10 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
-        />
-      </div>
+    <section className="border-b bg-white px-6 py-4 lg:px-8">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Input
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder="Search organization, folder, or scheme..."
+            className="pl-9"
+          />
+        </div>
 
-      {/* Filters Container */}
-      <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-        {/* Scheme Select */}
         <Select
           value={selectedScheme}
-          onValueChange={(val) => setSelectedScheme(val as Scheme | "all")}
+          onValueChange={(value) => setSelectedScheme(value as Scheme | "all")}
         >
-          <SelectTrigger className="w-[140px] h-10 bg-white border-slate-200 rounded-lg text-sm text-slate-600 shadow-none focus:ring-0 focus:ring-offset-0">
-            <SelectValue placeholder="All Schemes" />
+          <SelectTrigger className="w-full md:w-[170px]">
+            <SelectValue placeholder="Scheme" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Schemes</SelectItem>
@@ -63,15 +61,14 @@ export function ClientFilesFilters({
           </SelectContent>
         </Select>
 
-        {/* Status Select */}
         <Select
           value={selectedStatus}
-          onValueChange={(val) =>
-            setSelectedStatus(val as ClientStatus | "all")
+          onValueChange={(value) =>
+            setSelectedStatus(value as ClientStatus | "all")
           }
         >
-          <SelectTrigger className="w-[140px] h-10 bg-white border-slate-200 rounded-lg text-sm text-slate-600 shadow-none focus:ring-0 focus:ring-offset-0">
-            <SelectValue placeholder="All Status" />
+          <SelectTrigger className="w-full md:w-[160px]">
+            <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Status</SelectItem>
@@ -83,14 +80,7 @@ export function ClientFilesFilters({
           </SelectContent>
         </Select>
 
-        {/* Reset Button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-10 w-10 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-50 border border-transparent hover:border-slate-200"
-          onClick={onReset}
-          title="Reset Filters"
-        >
+        <Button variant="outline" size="icon" onClick={onReset}>
           <RotateCcw className="h-4 w-4" />
         </Button>
       </div>

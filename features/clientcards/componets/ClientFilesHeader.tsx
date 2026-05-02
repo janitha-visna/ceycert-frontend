@@ -1,4 +1,4 @@
-import { Files, LayoutPanelTop } from "lucide-react";
+import { BarChart3, FolderKanban } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ClientFilesHeaderProps {
@@ -7,23 +7,27 @@ interface ClientFilesHeaderProps {
 
 export function ClientFilesHeader({ onShowStatus }: ClientFilesHeaderProps) {
   return (
-    <header className="px-8 pt-8 pb-6 bg-white border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-          Client Files
-        </h1>
-        <p className="text-slate-500 text-sm">
-          View and manage assigned client folders and audit status.
-        </p>
-      </div>
+    <header className="border-b bg-white">
+      <div className="flex flex-col gap-4 px-6 py-6 sm:flex-row sm:items-center sm:justify-between lg:px-8">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
+            <FolderKanban className="h-5 w-5" />
+          </div>
 
-      <Button
-        onClick={onShowStatus}
-        className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 h-auto rounded-lg font-medium text-sm transition-colors shadow-sm active:scale-95 flex items-center gap-2 border-none"
-      >
-        <LayoutPanelTop className="h-4.5 w-4.5" />
-        View My Assigned Files Status
-      </Button>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+              Client Files
+            </h1>
+            <p className="text-sm text-slate-500">
+              View assigned client folders, schemes, status, and audit dates.
+            </p>
+          </div>
+        </div>
+
+        <Button onClick={onShowStatus} className="gap-2"> 
+          My Status
+        </Button>
+      </div>
     </header>
   );
 }
